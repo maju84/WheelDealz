@@ -10,6 +10,15 @@ builder.Services.AddDbContext<AuctionDbContext>(options =>
     options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection"))
 );
 
+/* 
+    AppDomain.CurrentDomain.GetAssemblies(): 
+    This is getting all the assemblies loaded in the current application domain. 
+    AutoMapper uses this to scan for profiles (classes that inherit from Profile),
+    where you define your mappings. 
+    By passing this to AddAutoMapper, you're telling AutoMapper to scan all loaded assemblies for profiles.
+*/
+builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
