@@ -1,0 +1,133 @@
+{
+	"info": {
+		"_postman_id": "7f416718-90a8-482b-b9bf-dbdc1362e712",
+		"name": "WheelDealz",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "32741897"
+	},
+	"item": [
+		{
+			"name": "all auctions",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"// Parse the response body as JSON",
+							"var jsonData = pm.response.json();",
+							"",
+							"// Test if the status code is 200 OK",
+							"pm.test(\"Status code is 200 OK\", function () {",
+							"    pm.response.to.have.status(200);",
+							"});",
+							"",
+							"// Test if there are exactly 10 items in the JSON response",
+							"pm.test(\"Should be exactly 10 items\", function () {",
+							"    pm.expect(jsonData).to.be.an('array').and.to.have.lengthOf(10);",
+							"});",
+							"",
+							"// Test if the first element has the minimum 'endedAt' value",
+							"pm.test(\"First item should have the minimum 'endedAt'\", function () {",
+							"    let endedAtValues = jsonData.map(a => new Date(a.endedAt));",
+							"    let minEndedAt = new Date(Math.min.apply(null, endedAtValues));",
+							"    pm.expect(new Date(jsonData[0].endedAt)).to.eql(minEndedAt);",
+							"});",
+							"",
+							"// Test if the last element has the maximum 'endedAt' value",
+							"pm.test(\"Last item should have the maximum 'endedAt'\", function () {",
+							"    let endedAtValues = jsonData.map(a => new Date(a.endedAt));",
+							"    let maxEndedAt = new Date(Math.max.apply(null, endedAtValues));",
+							"    pm.expect(new Date(jsonData[jsonData.length - 1].endedAt)).to.eql(maxEndedAt);",
+							"});",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{auction-svc}}/api/auctions",
+					"host": [
+						"{{auction-svc}}"
+					],
+					"path": [
+						"api",
+						"auctions"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Bugatti Veyron",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"var jsonData = pm.response.json();",
+							"",
+							"// Test if the status code is 200 OK",
+							"pm.test(\"Status code is 200 OK\", function () {",
+							"    pm.response.to.have.status(200);",
+							"});",
+							"",
+							"// Test if the make and model match \"Bugatti Veyron\"",
+							"pm.test(\"Car make and model should be Bugatti Veyron\", function () {",
+							"    pm.expect(jsonData.make).to.eql(\"Bugatti\");",
+							"    pm.expect(jsonData.model).to.eql(\"Veyron\");",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{auction-svc}}/api/auctions/c8c3ec17-01bf-49db-82aa-1ef80b833a9f",
+					"host": [
+						"{{auction-svc}}"
+					],
+					"path": [
+						"api",
+						"auctions",
+						"c8c3ec17-01bf-49db-82aa-1ef80b833a9f"
+					]
+				}
+			},
+			"response": []
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "auction-svc",
+			"value": "http://localhost:7001",
+			"type": "string"
+		}
+	]
+}
