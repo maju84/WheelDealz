@@ -167,6 +167,85 @@
 				}
 			},
 			"response": []
+		},
+		{
+			"name": "Update created auction",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test('Status code is 200', function() {",
+							"    pm.response.to.have.status(200);",
+							"})"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "PUT",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"make\": \"Ford Updated\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{auction-svc}}/api/auctions/{{createdItemId}}",
+					"host": [
+						"{{auction-svc}}"
+					],
+					"path": [
+						"api",
+						"auctions",
+						"{{createdItemId}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get updated Auction",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"var jsonData = pm.response.json();",
+							"",
+							"pm.test('Status code is 200', function() {",
+							"    pm.response.to.have.status(200);",
+							"})",
+							"",
+							"pm.test('Make includes updated', function() {",
+							"    pm.expect(jsonData.make).to.include('Updated');",
+							"})"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{auctionApi}}/api/auctions/{{createdItemId}}",
+					"host": [
+						"{{auctionApi}}"
+					],
+					"path": [
+						"api",
+						"auctions",
+						"{{createdItemId}}"
+					]
+				}
+			},
+			"response": []
 		}
 	],
 	"event": [
@@ -194,6 +273,10 @@
 			"key": "auction-svc",
 			"value": "http://localhost:7001",
 			"type": "string"
+		},
+		{
+			"key": "createdItemId",
+			"value": ""
 		}
 	]
 }

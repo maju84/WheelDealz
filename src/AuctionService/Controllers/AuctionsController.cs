@@ -75,6 +75,40 @@ namespace AuctionService.Controllers
                 new { auction.Id }, 
                 _mapper.Map<AuctionDto>(auction));
         }
+
+        [HttpPut("{id}")]
+        public async Task<ActionResult> UpdateAuction(Guid id, UpdateAuctionDto updateAuctionDto)
+        {
+            var auction = await _context.Auctions
+                .Include(a => a.Item)
+                .FirstOrDefaultAsync(a => a.Id == id);
+
+            if (auction == null)
+            {
+                return NotFound();
+            }
+
+            // todo - check that current user is seller
+
+            auction.Item.Make = updateAuctionDto.Make ?? auction.Item.Make;
+            auction.Item.Model = updateAuctionDto.Model ?? auction.Item.Model;
+            auction.Item.Year = updateAuctionDto.Year ?? auction.Item.Year;
+            auction.Item.Color = updateAuctionDto.Color ?? auction.Item.Color;
+            auction.Item.Mileage = updateAuctionDto.Mileage ?? auction.Item.Mileage;
+        
+
+            _context.Auctions.Update(auction);
+
+            var result = await _context.SaveChangesAsync() > 0;
+
+            if (!result)
+            {
+                return BadRequest("Failed to update auction.");
+            }
+
+            return Ok();
+        }
+
     }
 
 }
