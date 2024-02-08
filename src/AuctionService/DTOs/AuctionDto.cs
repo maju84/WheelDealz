@@ -13,7 +13,7 @@ public class AuctionDto
     public DateTime CreatedAt { get; set; }
     public DateTime UpdatedAt { get; set; }
     public DateTime EndedAt { get; set; }
-    public Status Status { get; set; }
+    public string Status { get; set; }
 
     // Item
     public string Make { get; set; }
