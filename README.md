@@ -6,8 +6,9 @@ how long it takes to do it with the long-unused C#, .NET, and associated ecosyst
 
 ## Tech-Stack
 1. C#, .NET
-2. EntityFramework
-3. PostgreSQL, mongoDB, RabbitMQ
+1. EntityFramework
+1. PostgreSQL, mongoDB, RabbitMQ
+1. Identity Server
 1. Docker
 1. ...
 
@@ -22,7 +23,7 @@ what's relevant (or recommended) for starting locally and debugging.
 You may run the entire postman collection or a subfolder of it using the postman ui.
 
 ## Development Tool Stack
-1. Docker
+1. Docker, -Compose
 1. VS Code
 1. .NET v.8
 1. Postman
@@ -42,18 +43,20 @@ Persistence: PostgreSQL
 
 ## Search Service (BE)
 Search for cars (`Items`) and related `Auctions`.
+Persistence: MongoDB, a document store. Mainly because there is a very handy 
+.NET integretion package that provides us a welcome search and pagination for mongoDB.
 
 ## Bidding Service (BE)
 This service manages the ongoing auctions and the real-time `Biddings`.
 
 ## User Service (BE)
-User management
+User management Authentication and Authorization. To start with, we use IdentityServer.
 
-## WebApp (FE)
-Web-UI.
+## Gateway Service 
+Single access point for clients, like the the FE/BFFE. We will do authentication on the gateway service. We will go with YARP.
 
-## Backend For Frontend (BFFE)
-This service knows how to talk to the various backends to fulfill frontend's needs. 
+## WebApp (FE) with Backend For Frontend (BFFE)
+NextJS
 
 ## Infrastructure
 
