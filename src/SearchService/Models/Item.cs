@@ -11,7 +11,7 @@ public class Item : Entity
     public int? CurrentHighBid { get; set; }
     public DateTime CreatedAt { get; set; }
     public DateTime UpdatedAt { get; set; }
-    public DateTime EndedAt { get; set; }
+    public DateTime EndsAt { get; set; }
     public string Status { get; set; }
     public string Make { get; set; }
     public string Model { get; set; }
