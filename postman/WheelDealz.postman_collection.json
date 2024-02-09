@@ -332,9 +332,12 @@
 									"    pm.response.to.have.status(200);",
 									"})",
 									"",
-									"pm.test('First item is Audi', function() {",
-									"    pm.expect(jsonData.results[0].make).to.eq('Audi');",
+									"pm.test('First item should have the earliest end date', function() {",
+									"    let endDates = jsonData.results.map(a => new Date(a.endsAt));",
+									"    let earliestEndDate = new Date(Math.min.apply(null, endDates));",
+									"    pm.expect(new Date(jsonData.results[0].endsAt)).to.eql(earliestEndDate);",
 									"})",
+									"",
 									"",
 									"pm.test('Result includes results, pagecount and totalcount properties', function() {",
 									"    pm.expect(jsonData).to.haveOwnProperty('results');",
@@ -393,7 +396,7 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "{{search-svc}}/api/search?searchTerm=mustang",
+							"raw": "{{search-svc}}/api/search?searchTerm=ford",
 							"host": [
 								"{{search-svc}}"
 							],
@@ -404,7 +407,56 @@
 							"query": [
 								{
 									"key": "searchTerm",
-									"value": "mustang"
+									"value": "ford"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get all items With PageSize and PageNumber",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"var jsonData = pm.response.json();",
+									"",
+									"pm.test('Status code is 200', function() {",
+									"    pm.response.to.have.status(200);",
+									"})",
+									"",
+									"pm.test('Result includes results, pagecount and totalcount properties', function() {",
+									"    pm.expect(jsonData).to.haveOwnProperty('results');",
+									"    pm.expect(jsonData).to.haveOwnProperty('pageCount');",
+									"    pm.expect(jsonData).to.haveOwnProperty('totalCount');",
+									"})"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{search-svc}}/api/search?pageNumber=2&pageSize=2",
+							"host": [
+								"{{search-svc}}"
+							],
+							"path": [
+								"api",
+								"search"
+							],
+							"query": [
+								{
+									"key": "pageNumber",
+									"value": "2"
+								},
+								{
+									"key": "pageSize",
+									"value": "2"
 								}
 							]
 						}
