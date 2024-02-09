@@ -7,309 +7,411 @@
 	},
 	"item": [
 		{
-			"name": "all auctions",
-			"event": [
+			"name": "auction-svc",
+			"item": [
 				{
-					"listen": "test",
-					"script": {
-						"exec": [
-							"// Parse the response body as JSON",
-							"var jsonData = pm.response.json();",
-							"",
-							"// Test if the status code is 200 OK",
-							"pm.test(\"Status code is 200 OK\", function () {",
-							"    pm.response.to.have.status(200);",
-							"});",
-							"",
-							"// Test if there are exactly 10 items in the JSON response",
-							"pm.test(\"Should be exactly 10 items\", function () {",
-							"    pm.expect(jsonData).to.be.an('array').and.to.have.lengthOf(10);",
-							"});",
-							"",
-							"// Test if the first element has the minimum 'endedAt' value",
-							"pm.test(\"First item should have the minimum 'endedAt'\", function () {",
-							"    let endedAtValues = jsonData.map(a => new Date(a.endedAt));",
-							"    let minEndedAt = new Date(Math.min.apply(null, endedAtValues));",
-							"    pm.expect(new Date(jsonData[0].endedAt)).to.eql(minEndedAt);",
-							"});",
-							"",
-							"// Test if the last element has the maximum 'endedAt' value",
-							"pm.test(\"Last item should have the maximum 'endedAt'\", function () {",
-							"    let endedAtValues = jsonData.map(a => new Date(a.endedAt));",
-							"    let maxEndedAt = new Date(Math.max.apply(null, endedAtValues));",
-							"    pm.expect(new Date(jsonData[jsonData.length - 1].endedAt)).to.eql(maxEndedAt);",
-							"});",
-							""
-						],
-						"type": "text/javascript"
-					}
-				}
-			],
-			"request": {
-				"method": "GET",
-				"header": [],
-				"url": {
-					"raw": "{{auction-svc}}/api/auctions",
-					"host": [
-						"{{auction-svc}}"
-					],
-					"path": [
-						"api",
-						"auctions"
-					]
-				}
-			},
-			"response": []
-		},
-		{
-			"name": "Bugatti Veyron",
-			"event": [
-				{
-					"listen": "test",
-					"script": {
-						"exec": [
-							"var jsonData = pm.response.json();",
-							"",
-							"// Test if the status code is 200 OK",
-							"pm.test(\"Status code is 200 OK\", function () {",
-							"    pm.response.to.have.status(200);",
-							"});",
-							"",
-							"// Test if the make and model match \"Bugatti Veyron\"",
-							"pm.test(\"Car make and model should be Bugatti Veyron\", function () {",
-							"    pm.expect(jsonData.make).to.eql(\"Bugatti\");",
-							"    pm.expect(jsonData.model).to.eql(\"Veyron\");",
-							"});"
-						],
-						"type": "text/javascript"
-					}
-				}
-			],
-			"request": {
-				"method": "GET",
-				"header": [],
-				"url": {
-					"raw": "{{auction-svc}}/api/auctions/c8c3ec17-01bf-49db-82aa-1ef80b833a9f",
-					"host": [
-						"{{auction-svc}}"
-					],
-					"path": [
-						"api",
-						"auctions",
-						"c8c3ec17-01bf-49db-82aa-1ef80b833a9f"
-					]
-				}
-			},
-			"response": []
-		},
-		{
-			"name": "create new auction Ford",
-			"event": [
-				{
-					"listen": "test",
-					"script": {
-						"exec": [
-							"var jsonData = pm.response.json();",
-							"",
-							"pm.test(\"Status code is 201\", function () {",
-							"    pm.response.to.have.status(201);",
-							"});",
-							"",
-							"pm.test(\"Response body contains expected properties\", function () {",
-							"    pm.expect(jsonData).to.haveOwnProperty('id');",
-							"    pm.expect(jsonData).to.haveOwnProperty('make');",
-							"    pm.expect(jsonData).to.haveOwnProperty('model');",
-							"    pm.expect(jsonData).to.haveOwnProperty('year');",
-							"    pm.expect(jsonData).to.haveOwnProperty('imageUrl');",
-							"    pm.expect(jsonData).to.haveOwnProperty('seller');",
-							"    pm.expect(jsonData.status).to.eq('Live');",
-							"});",
-							"",
-							"pm.collectionVariables.set(\"createdItemId\", jsonData.id);"
-						],
-						"type": "text/javascript"
-					}
-				},
-				{
-					"listen": "prerequest",
-					"script": {
-						"exec": [
-							"var date = new Date()",
-							"date.setDate(date.getDate() + 14);",
-							"var dateString = date.toISOString();",
-							"pm.variables.set(\"dateString\", dateString);"
-						],
-						"type": "text/javascript"
-					}
-				}
-			],
-			"request": {
-				"method": "POST",
-				"header": [],
-				"body": {
-					"mode": "raw",
-					"raw": "{\n  \"make\": \"Ford\",\n  \"model\": \"Escort\",\n  \"color\": \"White\",\n  \"year\": \"2021\",\n  \"mileage\": \"10000\",\n  \"imageUrl\": \"https://cdn.pixabay.com/photo/2018/02/04/15/45/car-3130111_960_720.jpg\",\n  \"reservePrice\": 100,\n  \"endedAt\": \"{{dateString}}\"\n}",
-					"options": {
-						"raw": {
-							"language": "json"
+					"name": "all auctions",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"// Parse the response body as JSON",
+									"var jsonData = pm.response.json();",
+									"",
+									"// Test if the status code is 200 OK",
+									"pm.test(\"Status code is 200 OK\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									"// Test if there are exactly 10 items in the JSON response",
+									"pm.test(\"Should be exactly 10 items\", function () {",
+									"    pm.expect(jsonData).to.be.an('array').and.to.have.lengthOf(10);",
+									"});",
+									"",
+									"// Test if the first element has the minimum 'endedAt' value",
+									"pm.test(\"First item should have the minimum 'endedAt'\", function () {",
+									"    let endedAtValues = jsonData.map(a => new Date(a.endedAt));",
+									"    let minEndedAt = new Date(Math.min.apply(null, endedAtValues));",
+									"    pm.expect(new Date(jsonData[0].endedAt)).to.eql(minEndedAt);",
+									"});",
+									"",
+									"// Test if the last element has the maximum 'endedAt' value",
+									"pm.test(\"Last item should have the maximum 'endedAt'\", function () {",
+									"    let endedAtValues = jsonData.map(a => new Date(a.endedAt));",
+									"    let maxEndedAt = new Date(Math.max.apply(null, endedAtValues));",
+									"    pm.expect(new Date(jsonData[jsonData.length - 1].endedAt)).to.eql(maxEndedAt);",
+									"});",
+									""
+								],
+								"type": "text/javascript"
+							}
 						}
-					}
-				},
-				"url": {
-					"raw": "{{auction-svc}}/api/auctions",
-					"host": [
-						"{{auction-svc}}"
 					],
-					"path": [
-						"api",
-						"auctions"
-					]
-				}
-			},
-			"response": []
-		},
-		{
-			"name": "Update created auction",
-			"event": [
-				{
-					"listen": "test",
-					"script": {
-						"exec": [
-							"pm.test('Status code is 200', function() {",
-							"    pm.response.to.have.status(200);",
-							"})"
-						],
-						"type": "text/javascript"
-					}
-				}
-			],
-			"request": {
-				"method": "PUT",
-				"header": [],
-				"body": {
-					"mode": "raw",
-					"raw": "{\n    \"make\": \"Ford Updated\"\n}",
-					"options": {
-						"raw": {
-							"language": "json"
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{auction-svc}}/api/auctions",
+							"host": [
+								"{{auction-svc}}"
+							],
+							"path": [
+								"api",
+								"auctions"
+							]
 						}
-					}
+					},
+					"response": []
 				},
-				"url": {
-					"raw": "{{auction-svc}}/api/auctions/{{createdItemId}}",
-					"host": [
-						"{{auction-svc}}"
+				{
+					"name": "Bugatti Veyron",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"var jsonData = pm.response.json();",
+									"",
+									"// Test if the status code is 200 OK",
+									"pm.test(\"Status code is 200 OK\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									"// Test if the make and model match \"Bugatti Veyron\"",
+									"pm.test(\"Car make and model should be Bugatti Veyron\", function () {",
+									"    pm.expect(jsonData.make).to.eql(\"Bugatti\");",
+									"    pm.expect(jsonData.model).to.eql(\"Veyron\");",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
 					],
-					"path": [
-						"api",
-						"auctions",
-						"{{createdItemId}}"
-					]
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{auction-svc}}/api/auctions/c8c3ec17-01bf-49db-82aa-1ef80b833a9f",
+							"host": [
+								"{{auction-svc}}"
+							],
+							"path": [
+								"api",
+								"auctions",
+								"c8c3ec17-01bf-49db-82aa-1ef80b833a9f"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "create new auction Ford",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"var jsonData = pm.response.json();",
+									"",
+									"pm.test(\"Status code is 201\", function () {",
+									"    pm.response.to.have.status(201);",
+									"});",
+									"",
+									"pm.test(\"Response body contains expected properties\", function () {",
+									"    pm.expect(jsonData).to.haveOwnProperty('id');",
+									"    pm.expect(jsonData).to.haveOwnProperty('make');",
+									"    pm.expect(jsonData).to.haveOwnProperty('model');",
+									"    pm.expect(jsonData).to.haveOwnProperty('year');",
+									"    pm.expect(jsonData).to.haveOwnProperty('imageUrl');",
+									"    pm.expect(jsonData).to.haveOwnProperty('seller');",
+									"    pm.expect(jsonData.status).to.eq('Live');",
+									"});",
+									"",
+									"pm.collectionVariables.set(\"createdItemId\", jsonData.id);"
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"var date = new Date()",
+									"date.setDate(date.getDate() + 14);",
+									"var dateString = date.toISOString();",
+									"pm.variables.set(\"dateString\", dateString);"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"make\": \"Ford\",\n  \"model\": \"Escort\",\n  \"color\": \"White\",\n  \"year\": \"2021\",\n  \"mileage\": \"10000\",\n  \"imageUrl\": \"https://cdn.pixabay.com/photo/2018/02/04/15/45/car-3130111_960_720.jpg\",\n  \"reservePrice\": 100,\n  \"endedAt\": \"{{dateString}}\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{auction-svc}}/api/auctions",
+							"host": [
+								"{{auction-svc}}"
+							],
+							"path": [
+								"api",
+								"auctions"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update created auction",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test('Status code is 200', function() {",
+									"    pm.response.to.have.status(200);",
+									"})"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"make\": \"Ford Updated\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{auction-svc}}/api/auctions/{{createdItemId}}",
+							"host": [
+								"{{auction-svc}}"
+							],
+							"path": [
+								"api",
+								"auctions",
+								"{{createdItemId}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get updated auction",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"var jsonData = pm.response.json();",
+									"",
+									"pm.test('Status code is 200', function() {",
+									"    pm.response.to.have.status(200);",
+									"})",
+									"",
+									"pm.test('Make includes updated', function() {",
+									"    pm.expect(jsonData.make).to.include('Updated');",
+									"})"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{auction-svc}}/api/auctions/{{createdItemId}}",
+							"host": [
+								"{{auction-svc}}"
+							],
+							"path": [
+								"api",
+								"auctions",
+								"{{createdItemId}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete auction",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test('Status code is 200', function() {",
+									"    pm.response.to.have.status(200);",
+									"})"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{auction-svc}}/api/auctions/{{createdItemId}}",
+							"host": [
+								"{{auction-svc}}"
+							],
+							"path": [
+								"api",
+								"auctions",
+								"{{createdItemId}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get deleted auction - expect 404",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test('Status code is 404', function() {",
+									"    pm.response.to.have.status(404);",
+									"})"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{auction-svc}}/api/auctions/{{createdItemId}}",
+							"host": [
+								"{{auction-svc}}"
+							],
+							"path": [
+								"api",
+								"auctions",
+								"{{createdItemId}}"
+							]
+						}
+					},
+					"response": []
 				}
-			},
-			"response": []
+			]
 		},
 		{
-			"name": "Get updated auction",
-			"event": [
+			"name": "search-svc",
+			"item": [
 				{
-					"listen": "test",
-					"script": {
-						"exec": [
-							"var jsonData = pm.response.json();",
-							"",
-							"pm.test('Status code is 200', function() {",
-							"    pm.response.to.have.status(200);",
-							"})",
-							"",
-							"pm.test('Make includes updated', function() {",
-							"    pm.expect(jsonData.make).to.include('Updated');",
-							"})"
-						],
-						"type": "text/javascript"
-					}
-				}
-			],
-			"request": {
-				"method": "GET",
-				"header": [],
-				"url": {
-					"raw": "{{auctionApi}}/api/auctions/{{createdItemId}}",
-					"host": [
-						"{{auctionApi}}"
+					"name": "all items",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"var jsonData = pm.response.json();",
+									"",
+									"pm.test('Status code is 200', function() {",
+									"    pm.response.to.have.status(200);",
+									"})",
+									"",
+									"pm.test('First item is Audi', function() {",
+									"    pm.expect(jsonData.results[0].make).to.eq('Audi');",
+									"})",
+									"",
+									"pm.test('Result includes results, pagecount and totalcount properties', function() {",
+									"    pm.expect(jsonData).to.haveOwnProperty('results');",
+									"    pm.expect(jsonData).to.haveOwnProperty('pageCount');",
+									"    pm.expect(jsonData).to.haveOwnProperty('totalCount');",
+									"})"
+								],
+								"type": "text/javascript"
+							}
+						}
 					],
-					"path": [
-						"api",
-						"auctions",
-						"{{createdItemId}}"
-					]
-				}
-			},
-			"response": []
-		},
-		{
-			"name": "Delete auction",
-			"event": [
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{search-svc}}/api/search",
+							"host": [
+								"{{search-svc}}"
+							],
+							"path": [
+								"api",
+								"search"
+							]
+						}
+					},
+					"response": []
+				},
 				{
-					"listen": "test",
-					"script": {
-						"exec": [
-							"pm.test('Status code is 200', function() {",
-							"    pm.response.to.have.status(200);",
-							"})"
-						],
-						"type": "text/javascript"
-					}
-				}
-			],
-			"request": {
-				"method": "DELETE",
-				"header": [],
-				"url": {
-					"raw": "{{auctionApi}}/api/auctions/{{createdItemId}}",
-					"host": [
-						"{{auctionApi}}"
+					"name": "search: make is Ford",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"var jsonData = pm.response.json();",
+									"",
+									"pm.test('Status code is 200', function() {",
+									"    pm.response.to.have.status(200);",
+									"})",
+									"",
+									"pm.test('First item is Ford', function() {",
+									"    pm.expect(jsonData.results[0].make).to.eq('Ford');",
+									"})",
+									"",
+									"pm.test('Result includes results, pagecount and totalcount properties', function() {",
+									"    pm.expect(jsonData).to.haveOwnProperty('results');",
+									"    pm.expect(jsonData).to.haveOwnProperty('pageCount');",
+									"    pm.expect(jsonData).to.haveOwnProperty('totalCount');",
+									"})"
+								],
+								"type": "text/javascript"
+							}
+						}
 					],
-					"path": [
-						"api",
-						"auctions",
-						"{{createdItemId}}"
-					]
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{search-svc}}/api/search?searchTerm=mustang",
+							"host": [
+								"{{search-svc}}"
+							],
+							"path": [
+								"api",
+								"search"
+							],
+							"query": [
+								{
+									"key": "searchTerm",
+									"value": "mustang"
+								}
+							]
+						}
+					},
+					"response": []
 				}
-			},
-			"response": []
-		},
-		{
-			"name": "Get deleted auction - expect 404",
-			"event": [
-				{
-					"listen": "test",
-					"script": {
-						"exec": [
-							"pm.test('Status code is 404', function() {",
-							"    pm.response.to.have.status(404);",
-							"})"
-						],
-						"type": "text/javascript"
-					}
-				}
-			],
-			"request": {
-				"method": "GET",
-				"header": [],
-				"url": {
-					"raw": "{{auctionApi}}/api/auctions/{{createdItemId}}",
-					"host": [
-						"{{auctionApi}}"
-					],
-					"path": [
-						"api",
-						"auctions",
-						"{{createdItemId}}"
-					]
-				}
-			},
-			"response": []
+			]
 		}
 	],
 	"event": [
@@ -341,6 +443,11 @@
 		{
 			"key": "createdItemId",
 			"value": ""
+		},
+		{
+			"key": "search-svc",
+			"value": "http://localhost:7002",
+			"type": "string"
 		}
 	]
 }
