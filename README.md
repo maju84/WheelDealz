@@ -7,18 +7,17 @@ how long it takes to do it with the long-unused C#, .NET, and associated ecosyst
 ## Tech-Stack
 1. C#, .NET
 2. EntityFramework
-3. PostgreSQL
-4. Docker
+3. PostgreSQL, mongoDB, RabbitMQ
+1. Docker
 1. ...
 
 # Developer Notes
 what's relevant (or recommended) for starting locally and debugging.
 
-In order to start the postgres db of the auction service in /WheelDealz/ do:
-`docker compose up`
+- `docker compose up`  ...to start the postgres db of the auction service in /WheelDealz/
 
-In order to start the /WheelDealz/AuctionService in /WheelDealz/src/AuctionService/ do:
-`dotnet watch`
+- `dotnet watch`  ...to start the /WheelDealz/AuctionService in /WheelDealz/src/AuctionService/
+
 
 You may run the entire postman collection or a subfolder of it using the postman ui.
 
