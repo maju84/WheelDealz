@@ -415,7 +415,7 @@
 					"response": []
 				},
 				{
-					"name": "Get all items With PageSize and PageNumber",
+					"name": "all items with PageSize and PageNumber",
 					"event": [
 						{
 							"listen": "test",
@@ -457,6 +457,51 @@
 								{
 									"key": "pageSize",
 									"value": "2"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "all items With Bob as Seller",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"var jsonData = pm.response.json();",
+									"",
+									"pm.test('Status code is 200', function() {",
+									"    pm.response.to.have.status(200);",
+									"})",
+									"",
+									"pm.test('Result includes results, pagecount and totalcount properties', function() {",
+									"    pm.expect(jsonData).to.haveOwnProperty('results');",
+									"    pm.expect(jsonData).to.haveOwnProperty('pageCount');",
+									"    pm.expect(jsonData).to.haveOwnProperty('totalCount');",
+									"})"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{search-svc}}/api/search?seller=bob",
+							"host": [
+								"{{search-svc}}"
+							],
+							"path": [
+								"api",
+								"search"
+							],
+							"query": [
+								{
+									"key": "seller",
+									"value": "bob"
 								}
 							]
 						}
