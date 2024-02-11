@@ -2,6 +2,8 @@
 using AuctionService.DTOs;
 using AuctionService.Entities;
 using AutoMapper;
+using Contracts;
+using MassTransit;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
@@ -13,11 +15,14 @@ namespace AuctionService.Controllers
     {
         private readonly AuctionDbContext _context;
         private readonly IMapper _mapper;
+        private readonly IPublishEndpoint _publishEndpoint;
 
-        public AuctionsController(AuctionDbContext context, IMapper mapper)
+        public AuctionsController(AuctionDbContext context, IMapper mapper,
+            IPublishEndpoint publishEndpoint)
         {
             _context = context;
             _mapper = mapper;
+            _publishEndpoint = publishEndpoint;
         }      
 
     
@@ -70,10 +75,15 @@ namespace AuctionService.Controllers
                 return BadRequest("Failed to create auction.");
             }
 
+            // once our auction has been created and stored, we want to publish an event
+            var newAuction = _mapper.Map<AuctionDto>(auction);
+            await _publishEndpoint.Publish(_mapper.Map<AuctionCreated>(newAuction));
+
+
             return CreatedAtAction(
                 nameof(GetAuctionById), 
                 new { auction.Id }, 
-                _mapper.Map<AuctionDto>(auction));
+                newAuction);
         }
 
         [HttpPut("{id}")]
