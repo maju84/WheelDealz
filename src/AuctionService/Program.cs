@@ -1,4 +1,5 @@
 using AuctionService.Data;
+using MassTransit;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -18,6 +19,15 @@ builder.Services.AddDbContext<AuctionDbContext>(options =>
     By passing this to AddAutoMapper, you're telling AutoMapper to scan all loaded assemblies for profiles.
 */
 builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
+
+// MassTransit
+builder.Services.AddMassTransit(x =>
+{
+    x.UsingRabbitMq((context, cfg) =>
+    {
+        cfg.ConfigureEndpoints(context);
+    });
+});
 
 var app = builder.Build();
 
