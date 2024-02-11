@@ -3,7 +3,7 @@ using MongoDB.Entities;
 using SearchService.Models;
 using SearchService.RequestHelpers;
 
-namespace SearchService;
+namespace SearchService.Controllers;
 
 [ApiController]
 [Route("api/[controller]")]
