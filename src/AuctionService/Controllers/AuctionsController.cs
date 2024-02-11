@@ -28,7 +28,7 @@ namespace AuctionService.Controllers
         {
             var auctions = await _context.Auctions
                 .Include(a => a.Item)
-                .OrderBy(a => a.EndedAt)    // todo - parameterize ordering criteria
+                .OrderBy(a => a.EndsAt)    // todo - parameterize ordering criteria
                 .ToListAsync();
 
             var auctionDtos = _mapper.Map<List<AuctionDto>>(auctions);

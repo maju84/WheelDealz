@@ -34,7 +34,7 @@ namespace AuctionService.Data.Migrations
                     b.Property<int?>("CurrentHighBid")
                         .HasColumnType("integer");
 
-                    b.Property<DateTime>("EndedAt")
+                    b.Property<DateTime>("EndsAt")
                         .HasColumnType("timestamp with time zone");
 
                     b.Property<int>("ReservePrice")

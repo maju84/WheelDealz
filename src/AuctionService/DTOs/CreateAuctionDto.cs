@@ -17,7 +17,7 @@ public class CreateAuctionDto
     [Required]
     public string ImageUrl { get; set; }
     [Required]
-    public DateTime EndedAt { get; set; }
+    public DateTime EndsAt { get; set; }
     [Required]
     public int ReservePrice { get; set; }
 }
