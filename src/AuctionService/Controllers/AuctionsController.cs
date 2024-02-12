@@ -68,7 +68,6 @@ namespace AuctionService.Controllers
 
             _context.Auctions.Add(auction);
 
-            // once our auction has been created and stored, we want to publish an event
             var newAuction = _mapper.Map<AuctionDto>(auction);
             await _publishEndpoint.Publish(_mapper.Map<AuctionCreated>(newAuction));
 
@@ -132,6 +131,10 @@ namespace AuctionService.Controllers
             // todo - check that current user is seller
 
             _context.Auctions.Remove(auction);
+      
+            // Directly create and publish the AuctionDeleted event before saving changes
+            var auctionDeletedEvent = new AuctionDeleted { Id = auction.Id };
+            await _publishEndpoint.Publish(auctionDeletedEvent);
 
             var result = await _context.SaveChangesAsync() > 0;
 
