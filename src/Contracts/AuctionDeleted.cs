@@ -2,5 +2,5 @@
 
 public class AuctionDeleted
 {
-    public string Guid { get; set; }
+    public Guid Id { get; set; }
 }
