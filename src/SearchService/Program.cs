@@ -16,7 +16,8 @@ builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 // MassTransit
 builder.Services.AddMassTransit(x =>
 {
-    x.AddConsumersFromNamespaceContaining<AuctionCreatedConsumer>();
+    // all consumers in the same namespace as AuctionCreatedConsumer are added
+    x.AddConsumersFromNamespaceContaining<AuctionCreatedConsumer>();    
 
     x.SetEndpointNameFormatter(new KebabCaseEndpointNameFormatter(SearchServiceName, false));
 
