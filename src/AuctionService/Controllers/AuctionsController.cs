@@ -68,18 +68,17 @@ namespace AuctionService.Controllers
 
             _context.Auctions.Add(auction);
 
+            // once our auction has been created and stored, we want to publish an event
+            var newAuction = _mapper.Map<AuctionDto>(auction);
+            await _publishEndpoint.Publish(_mapper.Map<AuctionCreated>(newAuction));
+
             var result = await _context.SaveChangesAsync() > 0;
             
             if (!result)
             {
                 return BadRequest("Failed to create auction.");
             }
-
-            // once our auction has been created and stored, we want to publish an event
-            var newAuction = _mapper.Map<AuctionDto>(auction);
-            await _publishEndpoint.Publish(_mapper.Map<AuctionCreated>(newAuction));
-
-
+            
             return CreatedAtAction(
                 nameof(GetAuctionById), 
                 new { auction.Id }, 
