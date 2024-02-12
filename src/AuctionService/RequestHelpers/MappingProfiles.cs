@@ -35,6 +35,7 @@ public class MappingProfiles : Profile
         // Map from CreateAuctionDto to Item
         CreateMap<CreateAuctionDto, Item>();
 
+        // Map from AuctionDto to AuctionCreated for event publishing
         CreateMap<AuctionDto, AuctionCreated>();
     }
 }
