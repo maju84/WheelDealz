@@ -6,7 +6,11 @@
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Development"
       },
-      "applicationUrl": "https://localhost:5001"
+      "_comments": [
+        "Omitting SSL to simplify containerization.",
+        "IdentityServer will remain deployed internally, secured behind an SSL-enabled Ingress Controller.",
+      ],
+      "applicationUrl": "http://localhost:5000"
     }
   }
 }
