@@ -40,7 +40,7 @@ public class MappingProfiles : Profile
 
         // Map from Auction, Item to AuctionUpdated for event publishing
         CreateMap<Auction, AuctionUpdated>().IncludeMembers(a => a.Item);
-        CreateMap<Auction, AuctionUpdated>();
+        CreateMap<Item, AuctionUpdated>();
 
 
     }
