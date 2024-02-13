@@ -825,6 +825,507 @@
 					"response": []
 				}
 			]
+		},
+		{
+			"name": "identity-svc & auction-svc w. auth.",
+			"item": [
+				{
+					"name": "GetBobToken",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"var response = pm.response.json();",
+									"",
+									"pm.collectionVariables.set(\"BobToken\", response.access_token);"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "urlencoded",
+							"urlencoded": [
+								{
+									"key": "grant_type",
+									"value": "password",
+									"type": "text"
+								},
+								{
+									"key": "username",
+									"value": "bob",
+									"type": "text"
+								},
+								{
+									"key": "password",
+									"value": "Pass123$",
+									"type": "text"
+								},
+								{
+									"key": "client_id",
+									"value": "postman",
+									"type": "text"
+								},
+								{
+									"key": "client_secret",
+									"value": "NotSoSecret",
+									"type": "text"
+								},
+								{
+									"key": "scope",
+									"value": "auction-app openid profile",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{identitySvc}}/connect/token",
+							"host": [
+								"{{identitySvc}}"
+							],
+							"path": [
+								"connect",
+								"token"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "GetTomToken",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"var response = pm.response.json();",
+									"",
+									"pm.collectionVariables.set(\"TomToken\", response.access_token);"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "urlencoded",
+							"urlencoded": [
+								{
+									"key": "grant_type",
+									"value": "password",
+									"type": "text"
+								},
+								{
+									"key": "username",
+									"value": "tom",
+									"type": "text"
+								},
+								{
+									"key": "password",
+									"value": "Pass123$",
+									"type": "text"
+								},
+								{
+									"key": "client_id",
+									"value": "postman",
+									"type": "text"
+								},
+								{
+									"key": "client_secret",
+									"value": "NotSoSecret",
+									"type": "text"
+								},
+								{
+									"key": "scope",
+									"value": "auction-app openid profile",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{identity-svc}}/connect/token",
+							"host": [
+								"{{identity-svc}}"
+							],
+							"path": [
+								"connect",
+								"token"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "GetAliceToken",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"var response = pm.response.json();",
+									"",
+									"pm.collectionVariables.set(\"AliceToken\", response.access_token);"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "urlencoded",
+							"urlencoded": [
+								{
+									"key": "grant_type",
+									"value": "password",
+									"type": "text"
+								},
+								{
+									"key": "username",
+									"value": "alice",
+									"type": "text"
+								},
+								{
+									"key": "password",
+									"value": "Pass123$",
+									"type": "text"
+								},
+								{
+									"key": "client_id",
+									"value": "postman",
+									"type": "text"
+								},
+								{
+									"key": "client_secret",
+									"value": "NotSoSecret",
+									"type": "text"
+								},
+								{
+									"key": "scope",
+									"value": "auction-app openid profile",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{identity-svc}}/connect/token",
+							"host": [
+								"{{identity-svc}}"
+							],
+							"path": [
+								"connect",
+								"token"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get User Info",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{BobToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{identity-svc}}/connect/userinfo",
+							"host": [
+								"{{identity-svc}}"
+							],
+							"path": [
+								"connect",
+								"userinfo"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Create new Auction no auth",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 401\", function () {",
+									"    pm.response.to.have.status(401);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"var date = new Date()",
+									"date.setDate(date.getDate() + 14);",
+									"var dateString = date.toISOString();",
+									"pm.variables.set(\"dateString\", dateString);"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"make\": \"Ford\",\n  \"model\": \"Escort\",\n  \"color\": \"White\",\n  \"year\": \"2021\",\n  \"mileage\": \"10000\",\n  \"imageUrl\": \"https://cdn.pixabay.com/photo/2018/02/04/15/45/car-3130111_960_720.jpg\",\n  \"reservePrice\": 100,\n  \"endsAt\": \"{{dateString}}\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{auction-svc}}/api/auctions",
+							"host": [
+								"{{auction-svc}}"
+							],
+							"path": [
+								"api",
+								"auctions"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Create new Auction as Alice",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"var jsonData = pm.response.json();",
+									"",
+									"pm.test(\"Status code is 201\", function () {",
+									"    pm.response.to.have.status(201);",
+									"});",
+									"",
+									"pm.test(\"Response body contains Alice as seller\", function () {",
+									"    pm.expect(jsonData).to.haveOwnProperty('seller');",
+									"    pm.expect(jsonData.seller).to.eq('alice');",
+									"});",
+									"",
+									"pm.collectionVariables.set(\"createdItemId\", jsonData.id);"
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"var date = new Date()",
+									"date.setDate(date.getDate() + 14);",
+									"var dateString = date.toISOString();",
+									"pm.variables.set(\"dateString\", dateString);"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{AliceToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"make\": \"Ford\",\n  \"model\": \"Escort\",\n  \"color\": \"White\",\n  \"year\": \"2021\",\n  \"mileage\": \"10000\",\n  \"imageUrl\": \"https://cdn.pixabay.com/photo/2018/02/04/15/45/car-3130111_960_720.jpg\",\n  \"reservePrice\": 100,\n  \"endsAt\": \"{{dateString}}\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{auction-svc}}/api/auctions",
+							"host": [
+								"{{auction-svc}}"
+							],
+							"path": [
+								"api",
+								"auctions"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update the created auction as Bob",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test('Status code is 403', function() {",
+									"    pm.response.to.have.status(403);",
+									"})"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{BobToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"make\": \"Ford Updated\",\n    \"model\": \"Updated\",\n    \"color\": \"red\",\n    \"mileage\": 20000,\n    \"year\": 1999\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{auction-svc}}/api/auctions/{{createdItemId}}",
+							"host": [
+								"{{auction-svc}}"
+							],
+							"path": [
+								"api",
+								"auctions",
+								"{{createdItemId}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update the created auction as Alice",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test('Status code is 200', function() {",
+									"    pm.response.to.have.status(200);",
+									"})"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{AliceToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"make\": \"Ford Updated\",\n    \"model\": \"Updated\",\n    \"color\": \"red\",\n    \"mileage\": 20000,\n    \"year\": 1999\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{auction-svc}}/api/auctions/{{createdItemId}}",
+							"host": [
+								"{{auction-svc}}"
+							],
+							"path": [
+								"api",
+								"auctions",
+								"{{createdItemId}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete Auction as Alice",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test('Status code is 200', function() {",
+									"    pm.response.to.have.status(200);",
+									"})"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{AliceToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{auction-svc}}/api/auctions/{{createdItemId}}",
+							"host": [
+								"{{auction-svc}}"
+							],
+							"path": [
+								"api",
+								"auctions",
+								"{{createdItemId}}"
+							]
+						}
+					},
+					"response": []
+				}
+			]
 		}
 	],
 	"event": [
@@ -871,9 +1372,21 @@
 			"value": ""
 		},
 		{
-			"value": "",
-			"type": "string",
-			"disabled": true
+			"key": "identity-svc",
+			"value": "http://localhost:5000",
+			"type": "string"
+		},
+		{
+			"key": "BobToken",
+			"value": ""
+		},
+		{
+			"key": "TomToken",
+			"value": ""
+		},
+		{
+			"key": "AliceToken",
+			"value": ""
 		}
 	]
 }

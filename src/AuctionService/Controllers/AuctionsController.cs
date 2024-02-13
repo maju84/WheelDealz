@@ -4,6 +4,7 @@ using AuctionService.Entities;
 using AutoMapper;
 using Contracts;
 using MassTransit;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
@@ -58,13 +59,13 @@ namespace AuctionService.Controllers
             return Ok(auctionDto);
         }
 
+        [Authorize]
         [HttpPost]
         public async Task<ActionResult<AuctionDto>> CreateAuction(CreateAuctionDto createAuctionDto)
         {
             var auction = _mapper.Map<Auction>(createAuctionDto);
-
-            // todo - current user is the seller
-            auction.Seller = "todo-current-user";
+            
+            auction.Seller = User.Identity.Name;
 
             _context.Auctions.Add(auction);
 
@@ -84,6 +85,7 @@ namespace AuctionService.Controllers
                 newAuction);
         }
 
+        [Authorize]
         [HttpPut("{id}")]
         public async Task<ActionResult> UpdateAuction(Guid id, UpdateAuctionDto updateAuctionDto)
         {
@@ -96,7 +98,10 @@ namespace AuctionService.Controllers
                 return NotFound();
             }
 
-            // todo - check that current user is seller
+            if (auction.Seller != User.Identity.Name)
+            {
+                return Forbid();
+            }
 
             auction.Item.Make = updateAuctionDto.Make ?? auction.Item.Make;
             auction.Item.Model = updateAuctionDto.Model ?? auction.Item.Model;
@@ -118,6 +123,7 @@ namespace AuctionService.Controllers
             return Ok();
         }
 
+        [Authorize]
         [HttpDelete("{id}")]
         public async Task<ActionResult> DeleteAuction(Guid id)
         {
@@ -129,7 +135,10 @@ namespace AuctionService.Controllers
                 return NotFound();
             }
 
-            // todo - check that current user is seller
+            if (auction.Seller != User.Identity.Name)
+            {
+                return Forbid();
+            }
 
             _context.Auctions.Remove(auction);
       
