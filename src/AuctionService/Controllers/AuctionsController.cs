@@ -103,9 +103,10 @@ namespace AuctionService.Controllers
             auction.Item.Year = updateAuctionDto.Year ?? auction.Item.Year;
             auction.Item.Color = updateAuctionDto.Color ?? auction.Item.Color;
             auction.Item.Mileage = updateAuctionDto.Mileage ?? auction.Item.Mileage;
-        
 
-            _context.Auctions.Update(auction);
+            // Create and publish the AuctionUpdated event before saving changes
+            var auctionUpdatedEvent = _mapper.Map<AuctionUpdated>(auction);
+            await _publishEndpoint.Publish(auctionUpdatedEvent);
 
             var result = await _context.SaveChangesAsync() > 0;
 

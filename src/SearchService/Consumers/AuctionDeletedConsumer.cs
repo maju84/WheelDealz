@@ -12,7 +12,12 @@ public class AuctionDeletedConsumer : IConsumer<AuctionDeleted>
     {
         var auctionDeleted = context.Message;
         
-        Console.WriteLine(" --> consuming AuctionDeleted event: " + context.Message.Id);
-        await DB.DeleteAsync<Item>(auctionDeleted.Id.ToString());
+        Console.WriteLine(" --> consuming AuctionDeleted event: " + auctionDeleted.Id);
+        var result = await DB.DeleteAsync<Item>(auctionDeleted.Id);
+
+        if (!result.IsAcknowledged)
+        {
+            throw new MessageException(typeof(AuctionDeleted), $"Failed to delete item with id: {auctionDeleted.Id}.");
+        }
     }
 }

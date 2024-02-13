@@ -37,5 +37,11 @@ public class MappingProfiles : Profile
 
         // Map from AuctionDto to AuctionCreated for event publishing
         CreateMap<AuctionDto, AuctionCreated>();
+
+        // Map from Auction, Item to AuctionUpdated for event publishing
+        CreateMap<Auction, AuctionUpdated>().IncludeMembers(a => a.Item);
+        CreateMap<Auction, AuctionUpdated>();
+
+
     }
 }
