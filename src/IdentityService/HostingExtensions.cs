@@ -1,6 +1,7 @@
 using Duende.IdentityServer;
 using IdentityService.Data;
 using IdentityService.Models;
+using IdentityService.Services;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Serilog;
@@ -34,7 +35,9 @@ internal static class HostingExtensions
             .AddInMemoryIdentityResources(Config.IdentityResources)
             .AddInMemoryApiScopes(Config.ApiScopes)
             .AddInMemoryClients(Config.Clients)
-            .AddAspNetIdentity<ApplicationUser>();
+            .AddAspNetIdentity<ApplicationUser>()
+
+            .AddProfileService<CustomProfileService>();
         
         // Configuring the application cookie's SameSite attribute to Lax
         // crucial for ensuring the application's authentication cookies are sent in a third-party context only in a safe manner, 
