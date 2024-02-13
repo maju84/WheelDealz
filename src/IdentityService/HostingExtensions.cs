@@ -36,6 +36,14 @@ internal static class HostingExtensions
             .AddInMemoryClients(Config.Clients)
             .AddAspNetIdentity<ApplicationUser>();
         
+        // Configuring the application cookie's SameSite attribute to Lax
+        // crucial for ensuring the application's authentication cookies are sent in a third-party context only in a safe manner, 
+        // thereby preventing CSRF attacks while allowing simpler cross-site usage scenarios, like single sign-on.
+        builder.Services.ConfigureApplicationCookie(options =>
+        {
+            options.Cookie.SameSite = Microsoft.AspNetCore.Http.SameSiteMode.Lax;
+        });
+
         builder.Services.AddAuthentication();
 
         return builder.Build();
