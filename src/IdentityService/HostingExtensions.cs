@@ -29,6 +29,14 @@ internal static class HostingExtensions
                 options.Events.RaiseFailureEvents = true;
                 options.Events.RaiseSuccessEvents = true;
 
+                if (builder.Environment.IsEnvironment("Docker"))
+                { 
+                    // every time a token is issued from the identity server, we will hardcode the 
+                    // issuer uri if the environment is Docker
+                    options.IssuerUri = "identity-svc";
+                }
+
+
                 // see https://docs.duendesoftware.com/identityserver/v6/fundamentals/resources/
                 // options.EmitStaticAudienceClaim = true; // todo - for now we are not using this
             })
