@@ -24,6 +24,11 @@ services:
     ports:
       - 5672:5672
       - 15672:15672
+    healthcheck:
+      test: ["CMD", "rabbitmqctl", "status"]
+      interval: 2s
+      timeout: 3s
+      retries: 10
   
   auction-svc:
     image: maju84/auction-svc:latest
@@ -39,8 +44,10 @@ services:
     ports:
       - 7001:80
     depends_on:
-      - postgres
-      - rabbitmq
+      rabbitmq:
+        condition: service_healthy
+      postgres:
+        condition: service_started
 
 volumes:
   pgdata:
