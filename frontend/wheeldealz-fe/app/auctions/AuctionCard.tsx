@@ -1,5 +1,8 @@
+'use client'
+
 import React from 'react'
 import Image from 'next/image'
+import CountdownTimer from './CountdownTimer'
 
 type Props = {
     auction:
@@ -9,6 +12,7 @@ type Props = {
         model: string,
         year: number,
         imageUrl: string,
+        endsAt: string,
     }
 }
 
@@ -27,12 +31,16 @@ export default function AuctionCard({ auction }: Props) {
                     //  100% (100vw) for <=768px, 50% (50vw) for 769px-1200px, and 25% (25vw) for >1200px
                     sizes='(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 25vw'
                 />
+                <div className='absolute bottom-2 left-2'>
+                    <CountdownTimer auctionEnd={auction.endsAt} />
+                </div>
             </div>            
         </div>
         <div className='flex justify-between items-center mt-4'>
             <h3 className='text-gray-700'>{auction.make} {auction.model}</h3>
             <p className='font-semibold text-sm'>{auction.year}</p> 
         </div>
+        
     </a>
   )
 }
