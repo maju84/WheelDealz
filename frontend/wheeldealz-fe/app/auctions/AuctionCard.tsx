@@ -1,8 +1,8 @@
 'use client'
 
 import React from 'react'
-import Image from 'next/image'
 import CountdownTimer from './CountdownTimer'
+import CarImage from './CarImage'
 
 type Props = {
     auction:
@@ -18,19 +18,12 @@ type Props = {
 
 export default function AuctionCard({ auction }: Props) {
   return (
-    <a href='#'>   
+    // The 'group' class enables child elements to change style on hover/focus of this <a> element.
+    // Use 'group-hover:' or 'group-focus:' prefixes in child classes for interactive styling.
+    <a href='#' className='group'>   
         <div className='w-full bg-gray-200 aspect-w-16 aspect-h-10 rounded-lg overflow-hidden'>
             <div>
-                <Image 
-                    src={auction.imageUrl}
-                    alt='image'
-                    fill
-                    priority
-                    className='object-cover'
-                    // Defines image width based on viewport width: 
-                    //  100% (100vw) for <=768px, 50% (50vw) for 769px-1200px, and 25% (25vw) for >1200px
-                    sizes='(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 25vw'
-                />
+                <CarImage imageUrl={auction.imageUrl} />                
                 <div className='absolute bottom-2 left-2'>
                     <CountdownTimer auctionEnd={auction.endsAt} />
                 </div>
