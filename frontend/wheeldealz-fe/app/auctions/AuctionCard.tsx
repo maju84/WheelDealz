@@ -1,8 +1,6 @@
-'use client'
-
-import React from 'react'
-import CountdownTimer from './CountdownTimer'
-import CarImage from './CarImage'
+import React from 'react';
+import CountdownTimer from './CountdownTimer';
+import CarImage from './CarImage';
 
 type Props = {
     auction:
@@ -35,5 +33,5 @@ export default function AuctionCard({ auction }: Props) {
         </div>
         
     </a>
-  )
+  );
 }

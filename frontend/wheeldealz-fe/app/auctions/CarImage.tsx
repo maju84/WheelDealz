@@ -1,5 +1,7 @@
-import React from 'react'
-import Image from 'next/image'
+'use client';
+
+import React from 'react';
+import Image from 'next/image';
 
 export default function CarImage({imageUrl} : {imageUrl: string}) {
     const [isLoading, setLoading] = React.useState(true);
@@ -20,5 +22,5 @@ export default function CarImage({imageUrl} : {imageUrl: string}) {
         sizes='(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 25vw'
         onLoad={() => setLoading(false)}
     />
-    )
+    );
 }
