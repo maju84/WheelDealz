@@ -1,5 +1,6 @@
 import { Metadata } from "next";
 import "./globals.css";
+import Navbar from "./Navbar";
 
 export const metadata: Metadata = {
   title: "WheelDealz",
@@ -12,8 +13,14 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
-      <body>{children}</body>
+    <html lang="en">      
+      <body>
+        <Navbar />
+        <main className='container mx-auto px-5 pt-10'>
+        {children}
+        </main>
+        
+      </body>
     </html>
   );
 }
