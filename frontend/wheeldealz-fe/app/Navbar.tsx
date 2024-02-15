@@ -1,4 +1,4 @@
-import React from 'react'
+import React from 'react';
 import { GiCarWheel } from "react-icons/gi";
 import { RiAuctionLine } from "react-icons/ri";
 
@@ -18,5 +18,5 @@ export default function Navbar() {
       <div>Search</div>
       <div>Login</div>
     </header>
-  )
+  );
 }
