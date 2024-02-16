@@ -1,19 +1,13 @@
 import React from 'react';
 import CountdownTimer from './CountdownTimer';
 import CarImage from './CarImage';
+import { Auction } from '@/types';
 
 type Props = {
-    auction:
-    {
-        id: string,
-        make: string,
-        model: string,
-        year: number,
-        imageUrl: string,
-        endsAt: string,
-    }
+    auction: Auction;
 }
 
+ 
 export default function AuctionCard({ auction }: Props) {
   return (
     // The 'group' class enables child elements to change style on hover/focus of this <a> element.

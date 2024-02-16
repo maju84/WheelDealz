@@ -1,7 +1,9 @@
-import React from 'react'
+import React from 'react';
 import AuctionCard from './AuctionCard';
+import { Auction, PagedResult } from '@/types';
 
-async function getData() {
+
+async function getData() : Promise<PagedResult<Auction>> {
   const response = await fetch("http://localhost:6001/search?pageSize=10");
 
   if (!response.ok) {
@@ -16,9 +18,9 @@ export default async function Listings() {
   
   return (
     <div className='grid grid-cols-4 gap-6'>
-      {data && data.results.map((auction: any) => (
-        <AuctionCard auction={auction} key={auction.id} />
+      {data && data.results.map(auction => (
+        <AuctionCard auction={ auction } key={ auction.id } />
         ))}
     </div>
-  )
+  );
 }

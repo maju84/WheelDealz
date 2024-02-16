@@ -4,7 +4,7 @@ import React from 'react';
 import Countdown, { zeroPad } from 'react-countdown';
 
 type Props = {
-    auctionEnd: string
+  auctionEnd: string;
 };
 
 const VERY_FEW_HOURS = 4;
