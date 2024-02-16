@@ -56,7 +56,7 @@ User management Authentication and Authorization. To start with, we use Identity
 Single access point for clients, like the the FE/BFFE. We will do authentication on the gateway service. We will go with YARP.
 
 ## WebApp (FE) with Backend For Frontend (BFFE)
-NextJS
+[NextJS](https://nextjs.org/docs) with [Tailwind CSS](https://tailwindcss.com/docs/utility-first) and [Flowbite React](https://www.flowbite-react.com/docs/getting-started/introduction).
 
 ## Infrastructure
 
