@@ -2,7 +2,8 @@
 
 import { Auction, PagedResult } from "@/types";
 
-export async function getData(page: number = 1, pageSize: number = 4) : Promise<PagedResult<Auction>> {
+export async function getPaginatedAuctionsFromSearch({ page = 1, pageSize = 4 }: 
+    { page?: number; pageSize?: number }): Promise<PagedResult<Auction>> {
     const response = await fetch(`http://localhost:6001/search?pageSize=${pageSize}&pageNumber=${page}`);
 
     if (!response.ok) {
