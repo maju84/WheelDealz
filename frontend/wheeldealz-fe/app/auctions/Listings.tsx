@@ -8,6 +8,7 @@ import { Auction, PagedResult } from '@/types';
 import Filters from './Filters';
 import { shallow } from 'zustand/shallow';
 import { useParamsStore } from '../hooks/useParamsStore';
+import EmptyFilters from '../components/EmptyFilters';
 
 type QueryParams = {
   pageNumber: number;
@@ -68,22 +69,26 @@ export default function Listings() {
   // If the pagedAuctions are not yet fetched, display a loading message
   if (!pagedAuctions)  return <h3>Loading...</h3>;
 
-  
   return (
     <>  {/* React fragment used as the single root element */}
       <Filters />
-      <div className='grid grid-cols-4 gap-6'>
-        {pagedAuctions.results.map(auction => (
-          <AuctionCard auction={ auction } key={ auction.id } />
-          ))}
-      </div>
-      <div className='flex justify-center mt-4'>
-        <AppPagination 
-          pageChanged={setPageNumber} 
-          currentPage={params.pageNumber} 
-          pageCount={pagedAuctions.pageCount} />
-      </div>
-    </>
-    
+        {pagedAuctions.totalCount === 0 ? (
+          <EmptyFilters showReset />
+        ) : (
+        <>
+          <div className='grid grid-cols-4 gap-6'>
+            {pagedAuctions.results.map(auction => (
+              <AuctionCard auction={ auction } key={ auction.id } />
+              ))}
+          </div>
+          <div className='flex justify-center mt-4'>
+            <AppPagination 
+              pageChanged={setPageNumber} 
+              currentPage={params.pageNumber} 
+              pageCount={pagedAuctions.pageCount} />
+          </div>
+        </>      
+      )}
+    </>    
   );
 }
