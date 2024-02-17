@@ -22,7 +22,7 @@ const initialState: State = {
     pageSize: 8,
     pageCount: 1,
     searchTerm: '',
-    orderBy: ''
+    orderBy: 'endsAt'
 };
 
 // Creation of the store using Zustand. generic `State & Action` combines state structure with actions.
