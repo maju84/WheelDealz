@@ -14,6 +14,7 @@ type QueryParams = {
   pageSize: number;
   searchTerm?: string;
   orderBy?: string;
+  filterBy?: string;
 };
 
 export default function Listings() {
@@ -26,6 +27,7 @@ export default function Listings() {
     pageSize: state.pageSize,
     searchTerm: state.searchTerm,
     orderBy: state.orderBy,
+    filterBy: state.filterBy,
   }), shallow); // ... we use Zustand's shallow equality check
 
   // to update the state, we only need the setParams function
@@ -41,6 +43,9 @@ export default function Listings() {
     }
     if (params.orderBy) {
       searchParams.set('orderBy', params.orderBy);
+    }
+    if (params.filterBy) {
+      searchParams.set('filterBy', params.filterBy);
     }
     return searchParams.toString();
   };
