@@ -10,6 +10,8 @@ import { shallow } from 'zustand/shallow';
 import { useParamsStore } from '../hooks/useParamsStore';
 import EmptyFilters from '../components/EmptyFilters';
 
+// todo this component feels a bit too big, maybe we can split it into smaller components
+
 type QueryParams = {
   pageNumber: number;
   pageSize: number;
