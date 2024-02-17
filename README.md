@@ -17,7 +17,14 @@ what's relevant (or recommended) for starting locally and debugging.
 
 - `docker compose up`  ...to start the postgres db of the auction service in /WheelDealz/
 
-- `dotnet watch`  ...to start the /WheelDealz/AuctionService in /WheelDealz/src/AuctionService/
+- `dotnet watch`  ...to start the Backend-Service of your choice like for instance '/WheelDealz/AuctionService' in '/WheelDealz/src/AuctionService/'
+
+- `docker compose down; docker volume prune -f; docker volume rm wheeldealz_pgdata; docker volume rm wheeldealz_mongodata; docker compose up -d`
+... to restart everything (except for the frontend) and reset the databases.
+
+- `npm run dev` ... to start the frontend in '/WheelDealz/frontend/wheeldealz-fe'
+
+- **todo brief description howto debug**: backend service, backend service inside docker, frontend
 
 
 You may run the entire postman collection or a subfolder of it using the postman ui.
@@ -63,6 +70,8 @@ Single access point for clients, like the the FE/BFFE. We will do authentication
 ### Event Bus
 The backend services should communicate asynchronously via the event bus.
 Technologies: EventStore or RabbitMQ.
+
+---
 
 # a poor man's backlog / todo list
 Many of the entries listed here also have a `// todo` in the code.
