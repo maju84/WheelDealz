@@ -19,7 +19,8 @@ export async function getPaginatedAuctionsFromSearch({ queryParams = QUERY_PARAM
     console.log("Encoded query params:", encodedQueryParams);
     console.log("Fetching data from:", `${SEARCH_URL}?${encodedQueryParams}`);
     // Use template literals for URL construction
-    const response = await fetch(`${SEARCH_URL}?${encodedQueryParams}`);
+    const response = await fetch(`${SEARCH_URL}?${encodedQueryParams}`, 
+      { cache: 'force-cache' });
 
     if (!response.ok) {
         throw new Error("Failed to fetch data");
