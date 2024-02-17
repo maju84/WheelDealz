@@ -3,15 +3,14 @@
 import { Button, ButtonGroup } from 'flowbite-react';
 import React from 'react';
 import { useParamsStore } from '../hooks/useParamsStore';
-import { AiOutlineClockCircle, AiOutlineSortAscending } from 'react-icons/ai';
-import { BsFillStopCircleFill } from 'react-icons/bs';
+import { AiFillStar, AiOutlineClockCircle, AiOutlineSortAscending } from 'react-icons/ai';
 
 const pageSizeOptions = [4, 8, 16];
 
 const orderButtons = [
     { label: 'Make', icon: AiOutlineSortAscending, value: 'make' },
     { label: 'End date', icon: AiOutlineClockCircle, value: 'endsAt' }, // default case in SearchSvc::SerachController
-    { label: 'Recently added', icon: BsFillStopCircleFill, value: 'new' },
+    { label: 'Recently added', icon: AiFillStar, value: 'new' },
 ];
 
 export default function Filters() {
@@ -32,7 +31,7 @@ export default function Filters() {
                         color={`${orderBy === value ? 'green' : 'gray'}`}
                         className='focus:ring-2'
                     >
-                        <Icon className='mr-3 h-4 w-4'/>
+                        <Icon className='mr-1 h-4 w-4'/>
                         {label}
                     </Button>
                 ))}
