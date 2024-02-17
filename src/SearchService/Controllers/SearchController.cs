@@ -62,14 +62,20 @@ public class SearchController : ControllerBase
         return searchParams.OrderBy switch
         {
             // if it is "make", then sort by make
-            "make" => query.Sort(x => x.Ascending(i => i.Make)),
+            "make" => query.Sort(x => x.Ascending(i => i.Make))
+                .Sort(x => x.Ascending(i => i.Model))
+                .Sort(x => x.Ascending(i => i.EndsAt))
+                .Sort(x => x.Ascending(i => i.ID)),
+
 
             // "new", then sort by newest
-            "new" => query.Sort(x => x.Descending(i => i.CreatedAt)),
+            "new" => query.Sort(x => x.Descending(i => i.CreatedAt))
+                .Sort(x => x.Ascending(i => i.EndsAt))
+                .Sort(x => x.Ascending(i => i.ID)),
 
             // anything else, sort by ending soonest (default)
-            _ => query.Sort(x => x.Ascending(i => i.EndsAt)) 
+            _ => query.Sort(x => x.Ascending(i => i.EndsAt))
+                .Sort(x => x.Ascending(i => i.ID))
         };
-
     }
 }

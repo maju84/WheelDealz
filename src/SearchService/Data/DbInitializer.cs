@@ -20,6 +20,31 @@ public class DbInitializer{
             .Key(a => a.Color, KeyType.Text)
             .CreateAsync(); // non-blocking to avoid slowing down the app startup
 
+
+        // Index for sorting by "make"
+        await DB.Index<Item>()
+            .Key(a => a.Make, KeyType.Ascending) // First sort by "Make"
+            .Key(a => a.Model, KeyType.Ascending) // Then by "Model"
+            .Key(a => a.EndsAt, KeyType.Ascending) // Then by "EndsAt"
+            .Key(a => a.ID, KeyType.Ascending) // Finally by "_id" for uniqueness
+            .Option(o => o.Background = true)
+            .CreateAsync();
+
+        // Index for sorting by "new"
+        await DB.Index<Item>()
+            .Key(a => a.CreatedAt, KeyType.Descending) // First sort by "CreatedAt"
+            .Key(a => a.EndsAt, KeyType.Ascending) // Then by "EndsAt"
+            .Key(a => a.ID, KeyType.Ascending) // Finally by "_id" for uniqueness
+            .Option(o => o.Background = true)
+            .CreateAsync();
+
+        // Index for default sorting (when "orderBy" is not "make" or "new")
+        await DB.Index<Item>()
+            .Key(a => a.EndsAt, KeyType.Ascending) // Sort by "EndsAt"
+            .Key(a => a.ID, KeyType.Ascending) // Then by "_id" for uniqueness
+            .Option(o => o.Background = true)
+            .CreateAsync();
+
         var count = await DB.CountAsync<Item>();
 
         if (count == 0){
