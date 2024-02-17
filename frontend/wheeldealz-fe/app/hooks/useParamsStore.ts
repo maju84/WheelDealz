@@ -7,6 +7,7 @@ type State = {
     pageSize: number;
     pageCount: number;
     searchTerm: string;
+    orderBy: string;
 }
 
 // Definition of the `Action` type, describing functions to manipulate the state.
@@ -20,7 +21,8 @@ const initialState: State = {
     pageNumber: 1,
     pageSize: 8,
     pageCount: 1,
-    searchTerm: ''
+    searchTerm: '',
+    orderBy: ''
 };
 
 // Creation of the store using Zustand. generic `State & Action` combines state structure with actions.
