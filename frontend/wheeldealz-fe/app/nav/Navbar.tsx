@@ -1,6 +1,7 @@
 import React from 'react';
 import { GiCarWheel } from "react-icons/gi";
 import { RiAuctionLine } from "react-icons/ri";
+import Search from './Search';
 
 export default function Navbar() {
   return (
@@ -15,7 +16,7 @@ export default function Navbar() {
         <div>WheelDealz</div>
         <RiAuctionLine size={42}/>
       </div>
-      <div>Search</div>
+      <Search />
       <div>Login</div>
     </header>
   );
