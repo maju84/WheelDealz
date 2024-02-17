@@ -8,5 +8,6 @@
   "plugins": ["react", "@typescript-eslint"],
   "rules": {
     "semi": ["error", "always"]
-  }
+  },
+  "ignorePatterns": ["next.config.mjs"]
 }
