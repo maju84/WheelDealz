@@ -1,4 +1,5 @@
-import { create } from "zustand";
+import { shallow } from "zustand/shallow";
+import { createWithEqualityFn } from "zustand/traditional";
 
 // Definition of the `State` type describing the shape of the store's state.
 type State = {
@@ -23,7 +24,7 @@ const initialState: State = {
 };
 
 // Creation of the store using Zustand. generic `State & Action` combines state structure with actions.
-export const useParamsStore = create<State & Action>(
+export const useParamsStore = createWithEqualityFn<State & Action>(
     (set) => ({
 
     ...initialState,    // initialize store with initial state using spread operator '...'
@@ -52,4 +53,4 @@ export const useParamsStore = create<State & Action>(
 
     // `reset` function to restore the state to its `initialState`
     reset: () => set(initialState),
-}));
+}), shallow); // Pass shallow as the equality function directly to createWithEqualityFn
