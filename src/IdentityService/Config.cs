@@ -45,6 +45,12 @@ public static class Config
                 AllowOfflineAccess = true,
                 AllowedScopes = { "openid", "profile", "auction-app" },
                 AccessTokenLifetime = 3600*24*30,
+
+                /* AlwaysIncludeUserClaimsInIdToken is set to true to ensure that all user claims are included 
+                in the identity token. This can reduce the need for additional requests to get user claims 
+                at the cost of increasing the token size, which may affect performance in scenarios with 
+                large numbers of claims or when token size is a concern in transport. */
+                AlwaysIncludeUserClaimsInIdToken = true,
             }
 
         };
