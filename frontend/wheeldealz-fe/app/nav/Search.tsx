@@ -1,15 +1,23 @@
 'use client';
 
-import React, { ChangeEvent, KeyboardEvent, useState } from 'react';
+import React, { ChangeEvent, KeyboardEvent, useEffect, useState } from 'react';
 import { FaSearch } from "react-icons/fa";
 import { useParamsStore } from '../hooks/useParamsStore';
 
 export default function Search() {
-    const setParams = useParamsStore((state) => state.setParams);   
-    const [searchTerm, setSearchTerm] = useState('');
+    const { searchTerm, setParams } = useParamsStore(state => ({
+        searchTerm: state.searchTerm,
+        setParams: state.setParams
+    }));
+    const [inputValue, setInputValue] = useState(searchTerm); // Initialize with global searchTerm
 
+    useEffect(() => {
+        // Sync inputValue with global searchTerm when it changes
+        setInputValue(searchTerm);
+    }, [searchTerm]);
+    
     const onChange = (event: ChangeEvent<HTMLInputElement>) => {
-        setSearchTerm(event.target.value);
+        setInputValue(event.target.value); // Update local state, not global
     };
 
     const handleKeyDown = (event: KeyboardEvent<HTMLInputElement>) => {
@@ -17,7 +25,7 @@ export default function Search() {
     };
 
     const search = () =>{
-        setParams({searchTerm: searchTerm});
+        setParams({ searchTerm: inputValue }); // Only update global state here
     };
 
   return (
@@ -25,6 +33,7 @@ export default function Search() {
         <input 
             onKeyDown={handleKeyDown}
             onChange={onChange}
+            value={inputValue} // Use local state value here
             type="text" 
             placeholder="Search for cars by make, model or color" 
             className='
