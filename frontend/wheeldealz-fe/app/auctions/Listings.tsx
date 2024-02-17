@@ -9,6 +9,12 @@ import Filters from './Filters';
 import { shallow } from 'zustand/shallow';
 import { useParamsStore } from '../hooks/useParamsStore';
 
+type QueryParams = {
+  pageNumber: number;
+  pageSize: number;
+  searchTerm?: string;
+};
+
 export default function Listings() {
   const [pagedAuctions, setPagedAuctions] = useState<PagedResult<Auction>>();
  
@@ -24,7 +30,7 @@ export default function Listings() {
   const setParams = useParamsStore(state => state.setParams);
 
    // Function to construct the query URL
-   const constructQueryString = (params) => {
+   const constructQueryString = (params: QueryParams) => {
     const searchParams = new URLSearchParams();
     searchParams.set('pageNumber', params.pageNumber.toString());
     searchParams.set('pageSize', params.pageSize.toString());
@@ -42,7 +48,7 @@ export default function Listings() {
 
   useEffect(() => {
     // Fetch the auctions from the server
-    getPaginatedAuctionsFromSearch({ queryParams: queryParams })
+    getPaginatedAuctionsFromSearch({ queryParams })
       // Update the state with the fetched auctions
       .then(pagedAuctions => {
         setPagedAuctions(pagedAuctions);
