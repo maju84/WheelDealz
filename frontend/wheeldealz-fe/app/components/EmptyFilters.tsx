@@ -1,18 +1,26 @@
+'use client';
+
 import React from 'react';
 import Heading from './Heading';
 import { Button } from 'flowbite-react';
 import { useParamsStore } from '../hooks/useParamsStore';
+import { signIn } from 'next-auth/react';
 
 type Props = {
     title?: string;
     subtile?: string;
     showReset?: boolean;
+
+    showLogin?: boolean;    // todo - not really the best place for this
+    callbackUrl?: string;
 }
 
 export default function EmptyFilters({
     title = 'No results found.',
     subtile = 'Try changing the filters or reset them.',
-    showReset
+    showReset,
+    showLogin,
+    callbackUrl
 } : Props) {
     // todo resetting everything is a bit too much actually
     const reset = useParamsStore(state => state.reset); 
@@ -22,6 +30,9 @@ export default function EmptyFilters({
         <div className='mt-4'>
             {showReset && (
                 <Button outline onClick={reset}>Reset filters</Button>
+            )}
+            {showLogin && (
+                <Button outline onClick={ () => signIn('id-server', { callbackUrl }) }>Login</Button>
             )}
         </div>
     </div>
