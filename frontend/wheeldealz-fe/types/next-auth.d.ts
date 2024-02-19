@@ -55,5 +55,6 @@ declare module 'next-auth/jwt' {
     // Extend the existing JWT interface with a username property
     interface JWT {        
         username: string; // Add a username property to the user object in the JWT
+        access_token?: string;
     }
 }
