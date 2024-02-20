@@ -32,7 +32,7 @@ export default function UserActions({ user }: Props) {
     </Dropdown.Item>
 
     <Dropdown.Item icon={AiFillCar}>
-      <Link href='/'>
+      <Link href='/auctions/create'>
         Create new Auction
       </Link>
     </Dropdown.Item>
