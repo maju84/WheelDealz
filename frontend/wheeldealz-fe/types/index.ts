@@ -23,3 +23,14 @@ export type Auction = {
     imageUrl: string;
     id: string;
 }
+
+
+export type SearchQueryParams = {
+    pageNumber: number;
+    pageSize: number;
+    searchTerm?: string;
+    orderBy?: string;
+    filterBy?: string;
+    seller?: string;
+    winner?: string;
+  };

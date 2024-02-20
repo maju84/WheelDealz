@@ -1,34 +1,55 @@
 'use client';
 
 import { Dropdown } from 'flowbite-react';
-import { User } from 'next-auth';
+import { Session } from 'next-auth';
 import { signOut } from 'next-auth/react';
 import Link from 'next/link';
+import { usePathname, useRouter} from 'next/navigation';
 import React from 'react';
 import { AiFillCar, AiFillTrophy, AiOutlineLogout } from 'react-icons/ai';
 import { HiCog, HiUser } from 'react-icons/hi';
+import { useParamsStore } from '../hooks/useParamsStore';
 
 type Props = {
-  user: Partial<User>
+  user: Session['user']
 };
 
 
 export default function UserActions({ user }: Props) {
+  const router = useRouter();
+  const pathname = usePathname();
+  const setParams = useParamsStore(state => state.setParams);
+
+  const setWinner = (user: { username?: string | null }) => {
+    setParams({
+      // If user.name is null or undefined, it will set winner to undefined
+      winner: user.username ?? undefined,
+      seller: undefined
+    });
+    if (pathname !== '/') router.push('/');
+  };
+  
+  const setSeller = (user: { username?: string | null }) => {
+    setParams({
+      winner: undefined,
+      // If user.name is null or undefined, it will set seller to undefined
+      seller: user.username ?? undefined
+    });
+    if (pathname !== '/') router.push('/');
+  };
+  
+
+
   return (
-    <Dropdown
-      inline 
-      label={ `Welcome ${user.name}`}
-    >
-    <Dropdown.Item icon={HiUser}>
-      <Link href='/'>
-        My Auctions
-      </Link>
+  
+  <Dropdown inline label={ `Welcome ${user.name}`} >
+  
+    <Dropdown.Item icon={HiUser} onClick={ () => setSeller(user) }>
+      My Auctions
     </Dropdown.Item>
 
-    <Dropdown.Item icon={AiFillTrophy}>
-      <Link href='/'>
-        Auctions won
-      </Link>
+    <Dropdown.Item icon={AiFillTrophy} onClick={ () => setWinner(user) }>
+      Auctions won
     </Dropdown.Item>
 
     <Dropdown.Item icon={AiFillCar}>

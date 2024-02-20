@@ -9,6 +9,8 @@ type State = {
     searchTerm: string;
     orderBy: string;
     filterBy: string;
+    seller?: string;
+    winner?: string;
 }
 
 // Definition of the `Action` type, describing functions to manipulate the state.
@@ -18,14 +20,16 @@ type Action = {
 }
 
 // The initial state of the store, setting default values for all state parts.
-const initialState: State = {
+const initialState: State = Object.freeze( {
     pageNumber: 1,
     pageSize: 8,
     pageCount: 1,
     searchTerm: '',
     orderBy: 'endsAt',
-    filterBy: 'live'
-};
+    filterBy: 'live',
+    seller: undefined,
+    winner: undefined
+});
 
 // Creation of the store using Zustand. generic `State & Action` combines state structure with actions.
 export const useParamsStore = createWithEqualityFn<State & Action>(
