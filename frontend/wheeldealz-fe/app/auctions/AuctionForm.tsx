@@ -4,6 +4,7 @@ import { Button } from 'flowbite-react';
 import React, { useEffect } from 'react';
 import { FieldValues, useForm } from 'react-hook-form';
 import Input from '../components/Input';
+import DateInput from '../components/DateInput';
 
 export default function AuctionForm() {
   const { 
@@ -54,8 +55,13 @@ export default function AuctionForm() {
       <div className='grid grid-cols-2 gap-3'>
         <Input label='Reserve Price or 0 if no reserve' name='reservePrice' control={ control } type='number'
           rules={{ required: 'Reserve Price is required' }} />
-        <Input label='Auction End Date and Time' name='auctionEnd' control={ control } type='date'
-          rules={{ required: 'Auction End is required' }} />
+        <DateInput 
+          label='Auction End Date and Time'
+          name='auctionEnd'
+          control={ control }
+          dateFormat='dd MMMM yyyy hh:mm a'
+          showTimeSelect
+          rules={{ required: 'End Date is required' }} />
       </div>
 
       <div className='flex justify-between'>
