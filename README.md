@@ -24,6 +24,12 @@ what's relevant (or recommended) for starting locally and debugging.
 
 - `npm run dev` ... to start the frontend in '/WheelDealz/frontend/wheeldealz-fe'
 
+- in order to make Authentication work with Identity Server on the client, you **must** have a '.env.local' file with these keys in '/WheelDealz/frontend/wheeldealz-fe/' with the following content:
+```properties
+NEXTAUTH_SECRET=somethingverysecret
+NEXTAUTH_URL=http://localhost:3000
+```
+
 - **todo brief description howto debug**: backend service, backend service inside docker, frontend
 
 
