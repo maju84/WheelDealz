@@ -91,7 +91,9 @@ const handleResponse = async (response: Response) => {
 // Publicly exposed methods using makeRequest for actual request handling
 export const fetchWrapper = {
     get: async ({ url, options }: { url: string; options?: FetchOptions }) => 
-        doFetch({ url, method: 'GET', options: { ...{ cache: 'force-cache' }, ...options} }),
+    
+        // fixme - commented out the cache option for now as freshly created auctions were not showing up in the list
+        doFetch({ url, method: 'GET', options/*: { ...{ cache: 'force-cache' }, ...options} */}),
 
     post: async ({ url, body, options }: { url: string; body: BodyType; options?: FetchOptions }) => 
         doFetch({ url, method: 'POST', body, options }),
