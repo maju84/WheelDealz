@@ -15,6 +15,9 @@ export default function AuthTest() {
         .then((response) => {
             setResult(response);
         })
+        .catch((error) => {
+            setResult(error.message);
+        })
         .finally(() => {
             setLoading(false);
         });

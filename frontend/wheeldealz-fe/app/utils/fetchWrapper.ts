@@ -34,7 +34,6 @@ const doFetch = async ({
             ...(body && { body: JSON.stringify(body) }), // Conditionally include body if provided
         };
         const response = await fetch(`${BASE_URL}${url}`, requestOptions);
-        console.log('doFetch:', response);
         return handleResponse(response);
     } catch (error) {
         console.error('Network error or fetch-related error:', error);
@@ -58,27 +57,36 @@ const getHeaders = async (): Promise<HeadersInit> => {
     }
 };
 
-
 const handleResponse = async (response: Response) => {
-    try {
-        const text = await response.text();
-        const data = text 
-            ? JSON.parse(text) 
-            : response.statusText 
-            ? response.statusText 
-            : response.status;
-
-        if (!response.ok) {            
-            const error = (data && data.message) || response.statusText;
-            throw new Error(error);
-        }
-        return data;
-    } catch (error) {        
+    const text = await response.text();
+    let data;
+    
+    // Try to parse JSON only if there is text, otherwise use the response statusText as the data.
+    if (text) {
+      try {
+        data = JSON.parse(text);
+      } catch (error) {
+        // If JSON parsing fails, log the error and use the raw text as the data.
         console.error('Error parsing JSON:', error);
-        throw new Error('Error parsing server response');
+        data = text;
+      }
+    } else {
+      data = response.statusText;
     }
-};
-
+  
+    if (response.ok) {
+      return data;
+    } else {
+      // When the response is not ok, construct an error object with more context.
+      const errorDetail = {
+        status: response.status,
+        message: data || 'An error occurred' // Fallback to a generic message if data is empty.
+      };
+    //   throw new Error(JSON.stringify(errorDetail)); // Throwing an error instead of returning an error object.
+      return {error: errorDetail};
+    }
+  };
+  
 
 // Publicly exposed methods using makeRequest for actual request handling
 export const fetchWrapper = {
