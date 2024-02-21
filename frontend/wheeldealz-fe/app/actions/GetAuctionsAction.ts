@@ -28,7 +28,7 @@ export const getPagedAuctionsFromSearch = async ({ queryParams = QUERY_PARAMS_DE
   }
 };
 
-export async function UpdateAuctionTest() {
+export async function updateAuctionTest() {
   return fetchWrapper.put({
     url: `${AUCTION_ENDPOINT}/${TEST_AUCTION_ID}`,
     body: { mileage: Math.floor(Math.random() * 100000)+1 }

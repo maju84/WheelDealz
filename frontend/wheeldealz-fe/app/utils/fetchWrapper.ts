@@ -23,17 +23,18 @@ const doFetch = async ({
     url,
     method,
     body,
-    options = { cache: 'force-cache' }, // Provide default fetch options here
+    options = {} // guards against crashing spread of potentially undefined options
 }: FetchRequestParams) => {
     try {
         const headers = await getHeaders();
         const requestOptions: RequestInit = {
             method,
             headers,
-            ...options, // Apply fetch options, including default cache setting
+            ...options,
             ...(body && { body: JSON.stringify(body) }), // Conditionally include body if provided
         };
         const response = await fetch(`${BASE_URL}${url}`, requestOptions);
+        console.log('doFetch:', response);
         return handleResponse(response);
     } catch (error) {
         console.error('Network error or fetch-related error:', error);
@@ -61,13 +62,16 @@ const getHeaders = async (): Promise<HeadersInit> => {
 const handleResponse = async (response: Response) => {
     try {
         const text = await response.text();
-        const data = text ? JSON.parse(text) : {};
+        const data = text 
+            ? JSON.parse(text) 
+            : response.statusText 
+            ? response.statusText 
+            : response.status;
 
         if (!response.ok) {            
             const error = (data && data.message) || response.statusText;
             throw new Error(error);
         }
-
         return data;
     } catch (error) {        
         console.error('Error parsing JSON:', error);
@@ -75,17 +79,18 @@ const handleResponse = async (response: Response) => {
     }
 };
 
+
 // Publicly exposed methods using makeRequest for actual request handling
 export const fetchWrapper = {
     get: async ({ url, options }: { url: string; options?: FetchOptions }) => 
-        doFetch({ url, method: 'GET', options }),
+        doFetch({ url, method: 'GET', options: { ...{ cache: 'force-cache' }, ...options} }),
 
     post: async ({ url, body, options }: { url: string; body: BodyType; options?: FetchOptions }) => 
         doFetch({ url, method: 'POST', body, options }),
 
     put: async ({ url, body, options }: { url: string; body: BodyType; options?: FetchOptions }) => 
         doFetch({ url, method: 'PUT', body, options }),
-        
+
     del: async ({ url, options }: { url: string; options?: FetchOptions }) => 
         doFetch({ url, method: 'DELETE', options }), 
 };
