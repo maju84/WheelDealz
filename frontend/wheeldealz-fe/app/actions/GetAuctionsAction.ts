@@ -3,6 +3,7 @@
 import { Auction, PagedResult } from "@/types";
 import { fetchWrapper } from "../utils/fetchWrapper";
 import { FieldValues } from "react-hook-form";
+import { revalidatePath } from "next/cache";
 
 const PAGE_SIZE_DEFAULT = 8;
 const PAGE_NUMBER_DEFAULT = 1;
@@ -37,9 +38,17 @@ export const getAuctionDetails = async (id: string): Promise<Auction> => {
   return fetchWrapper.get({ url: `${AUCTION_ENDPOINT}/${id}` });
 };
 
+export const updateAuction = async (id: string, data: FieldValues) => {
+  const res = fetchWrapper.put({ url: `${AUCTION_ENDPOINT}/${id}`, body: data });
+  revalidatePath(`/auctions/${id}`);
+  return res;
+};
+
 export async function updateAuctionTest() {
   return fetchWrapper.put({
     url: `${AUCTION_ENDPOINT}/${TEST_AUCTION_ID}`,
     body: { mileage: Math.floor(Math.random() * 100000)+1 }
   });
 }
+
+

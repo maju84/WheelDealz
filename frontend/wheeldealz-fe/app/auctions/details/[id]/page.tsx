@@ -4,15 +4,24 @@ import React from 'react';
 import CountdownTimer from '../../CountdownTimer';
 import CarImage from '../../CarImage';
 import DetailedSpecs from '../DetailedSpecs';
+import EditButton from './EditButton';
+import { getCurrentUser } from '@/app/actions/AuthActions';
 
 export default async function Details({ params }: { params: { id: string } }) {
   const data = await getAuctionDetails(params.id);
+  const user = await getCurrentUser();
 
   return ( 
     <div>
       <div className='flex justify-between'>
-        <div className='flex items-center gap-3'>
+      <div className='flex items-center gap-3'>
           <Heading title={`${data.make} ${data.model}`} subtitle={''} />
+          {user?.username === data.seller && (
+            <>
+              <EditButton id={data.id} />
+            </>
+
+          )}
         </div>
 
         <div className='flex gap-3'>

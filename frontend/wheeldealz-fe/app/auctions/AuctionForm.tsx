@@ -5,16 +5,24 @@ import React, { useEffect } from 'react';
 import { FieldValues, useForm } from 'react-hook-form';
 import Input from '../components/Input';
 import DateInput from '../components/DateInput';
-import { createAuction } from '../actions/GetAuctionsAction';
-import { useRouter } from 'next/navigation';
+import { createAuction, updateAuction } from '../actions/GetAuctionsAction';
+import { usePathname, useRouter } from 'next/navigation';
 import toast from 'react-hot-toast';
+import { Auction } from '@/types';
 
-export default function AuctionForm() {
+type Props = {
+  auction?: Auction
+}
+
+export default function AuctionForm({ auction }: Props) {
   const router = useRouter();
+  const pathname = usePathname();
+
   const { 
     control,  // Object for controlling input components, including rules for validation.
     handleSubmit, // Function to handle form submission, providing form data to a callback.
     setFocus, // Method to programmatically set focus on a specific form field.
+    reset, // Method to reset the form to its initial state.
     formState: { 
       isSubmitting, // Flag indicating if the form is currently in the process of being submitted.
       isValid, // Flag that is true if all form fields meet the validation criteria.
@@ -24,9 +32,16 @@ export default function AuctionForm() {
         { mode: 'onTouched' } // trigger validation on access
     );
 
-  useEffect(() => {
+    // todo: useEffect is the wrong way to be setting default state values.
+    //       react-hook-form has a 'defaultValues' prop that is more appropriate to use.
+  
+    useEffect(() => {
+    if (auction) {
+      const { make, model, color, year, mileage } = auction;
+      reset({ make, model, color, year, mileage });
+    }
     setFocus('make'); // focus on make input when component mounts
-  }, [setFocus]);   // trigger only once, when component mounts and setFocus changes
+  }, [auction, reset, setFocus]);   // trigger only once, when component mounts and setFocus changes
 
 
   const onSubmit = async (data: FieldValues) => {
@@ -38,11 +53,22 @@ export default function AuctionForm() {
       };
       delete transformedAuctionData.auctionEnd;
 
-      const res = await createAuction(transformedAuctionData);
+      let id;
+      let res;
+      if (pathname.includes('create')) {
+        res = await createAuction(transformedAuctionData);
+        id = res.id;
+      } else {
+        if (auction) {
+          res = await updateAuction(auction.id, transformedAuctionData);
+          id = auction.id;
+        }
+      }
+
       if (res.error) {
         throw res.error;
       }
-      router.push(`/auctions/details/${res.id}`); // todo 
+      router.push(`/auctions/details/${id}`); // todo 
     } catch (error: any) { // fixme - linter err about any
         toast.error(error.status + ' ' + error.message, { duration: 5000 });
     }
@@ -68,20 +94,26 @@ export default function AuctionForm() {
           rules={{ required: 'Mileage is required' }} />
       </div>
 
-      <Input label='Image URL' name='imageUrl' control={ control }
-        rules={{ required: 'Image URL is required' }} />
 
-      <div className='grid grid-cols-2 gap-3'>
-        <Input label='Reserve Price or 0 if no reserve' name='reservePrice' control={ control } type='number'
-          rules={{ required: 'Reserve Price is required' }} />
-        <DateInput 
-          label='Auction End Date and Time'
-          name='auctionEnd'
-          control={ control }
-          dateFormat='dd MMMM yyyy hh:mm a'
-          showTimeSelect
-          rules={{ required: 'End Date is required' }} />
-      </div>
+      { pathname.includes('create') && 
+      <>
+        <Input label='Image URL' name='imageUrl' control={ control }
+          rules={{ required: 'Image URL is required' }} />
+
+        <div className='grid grid-cols-2 gap-3'>
+          <Input label='Reserve Price or 0 if no reserve' name='reservePrice' control={ control } type='number'
+            rules={{ required: 'Reserve Price is required' }} />
+          <DateInput 
+            label='Auction End Date and Time'
+            name='auctionEnd'
+            control={ control }
+            dateFormat='dd MMMM yyyy hh:mm a'
+            showTimeSelect
+            rules={{ required: 'End Date is required' }} />
+        </div>
+      </> }
+      
+
 
       <div className='flex justify-between'>
         <Button outline color='gray'>Cancel</Button>
