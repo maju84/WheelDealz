@@ -7,6 +7,7 @@ import Input from '../components/Input';
 import DateInput from '../components/DateInput';
 import { createAuction } from '../actions/GetAuctionsAction';
 import { useRouter } from 'next/navigation';
+import toast from 'react-hot-toast';
 
 export default function AuctionForm() {
   const router = useRouter();
@@ -39,11 +40,11 @@ export default function AuctionForm() {
 
       const res = await createAuction(transformedAuctionData);
       if (res.error) {
-        throw new Error(res.error);
+        throw res.error;
       }
       router.push(`/auctions/details/${res.id}`); // todo 
-    } catch (error) { 
-      console.error('Error creating auction:', error);
+    } catch (error: any) { // fixme - linter err about any
+        toast.error(error.status + ' ' + error.message, { duration: 5000 });
     }
   };
 
