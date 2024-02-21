@@ -33,6 +33,10 @@ export const createAuction = async (data: FieldValues) => {   // todo i don't li
   return fetchWrapper.post({ url: AUCTION_ENDPOINT, body: data });
 };
 
+export const getAuctionDetails = async (id: string): Promise<Auction> => {
+  return fetchWrapper.get({ url: `${AUCTION_ENDPOINT}/${id}` });
+};
+
 export async function updateAuctionTest() {
   return fetchWrapper.put({
     url: `${AUCTION_ENDPOINT}/${TEST_AUCTION_ID}`,
