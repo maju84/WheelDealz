@@ -5,8 +5,11 @@ import React, { useEffect } from 'react';
 import { FieldValues, useForm } from 'react-hook-form';
 import Input from '../components/Input';
 import DateInput from '../components/DateInput';
+import { createAuction } from '../actions/GetAuctionsAction';
+import { useRouter } from 'next/navigation';
 
 export default function AuctionForm() {
+  const router = useRouter();
   const { 
     control,  // Object for controlling input components, including rules for validation.
     handleSubmit, // Function to handle form submission, providing form data to a callback.
@@ -25,8 +28,23 @@ export default function AuctionForm() {
   }, [setFocus]);   // trigger only once, when component mounts and setFocus changes
 
 
-  const onSubmit = (data: FieldValues) => {
-    console.log(data);
+  const onSubmit = async (data: FieldValues) => {
+    try {
+      // endpoint expects endsAt, not auctionEnd
+      const transformedAuctionData: FieldValues = {
+        ...data,
+        endsAt: data.auctionEnd,
+      };
+      delete transformedAuctionData.auctionEnd;
+
+      const res = await createAuction(transformedAuctionData);
+      if (res.error) {
+        throw new Error(res.error);
+      }
+      router.push(`/auctions/details/${res.id}`); // todo 
+    } catch (error) { 
+      console.error('Error creating auction:', error);
+    }
   };
 
 

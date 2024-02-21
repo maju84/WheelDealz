@@ -2,6 +2,7 @@
 
 import { Auction, PagedResult } from "@/types";
 import { fetchWrapper } from "../utils/fetchWrapper";
+import { FieldValues } from "react-hook-form";
 
 const PAGE_SIZE_DEFAULT = 8;
 const PAGE_NUMBER_DEFAULT = 1;
@@ -26,6 +27,10 @@ export const getPagedAuctionsFromSearch = async ({ queryParams = QUERY_PARAMS_DE
       console.error('Error fetching paged auctions:', error);
       throw error;
   }
+};
+
+export const createAuction = async (data: FieldValues) => {   // todo i don't like this type *here*
+  return fetchWrapper.post({ url: AUCTION_ENDPOINT, body: data });
 };
 
 export async function updateAuctionTest() {
