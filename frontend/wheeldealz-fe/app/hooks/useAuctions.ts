@@ -1,10 +1,10 @@
 // useAuctions.ts
 import { useState, useEffect } from 'react';
-import { getPaginatedAuctionsFromSearch } from '../actions/GetAuctionsAction';
 import { Auction, PagedResult } from '@/types';
 import { useParamsStore } from '../hooks/useParamsStore';
 import { shallow } from 'zustand/shallow';
 import { constructQueryString } from '../utils/constructQueryString';
+import { getPagedAuctionsFromSearch } from '../actions/GetAuctionsAction';
 
 export const useAuctions = () => {
     // State hook to manage the fetched auction data. Initially set to null indicating data has not been fetched yet.
@@ -27,7 +27,7 @@ export const useAuctions = () => {
     const queryParams = constructQueryString(searchParams);
 
     // Fetch paginated auction data based on the current search parameters.
-    getPaginatedAuctionsFromSearch({ queryParams })
+    getPagedAuctionsFromSearch({ queryParams })
       .then(response => {
         // Update local state with fetched data.
         setPagedAuctions(response);
