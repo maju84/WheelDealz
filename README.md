@@ -32,6 +32,8 @@ NEXTAUTH_URL=http://localhost:3000
 
 - **todo brief description howto debug**: backend service, backend service inside docker, frontend
 
+- **todo provide urls to Identity server, rabbitmq console etc..** 
+
 
 You may run the entire postman collection or a subfolder of it using the postman ui.
 
