@@ -6,6 +6,7 @@ import CarImage from '../../CarImage';
 import DetailedSpecs from '../DetailedSpecs';
 import EditButton from './EditButton';
 import { getCurrentUser } from '@/app/actions/AuthActions';
+import DeleteButton from './DeleteButton';
 
 export default async function Details({ params }: { params: { id: string } }) {
   const data = await getAuctionDetails(params.id);
@@ -19,6 +20,7 @@ export default async function Details({ params }: { params: { id: string } }) {
           {user?.username === data.seller && (
             <>
               <EditButton id={data.id} />
+              <DeleteButton id={data.id} />
             </>
 
           )}

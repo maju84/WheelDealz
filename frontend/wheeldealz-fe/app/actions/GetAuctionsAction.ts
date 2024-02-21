@@ -44,6 +44,10 @@ export const updateAuction = async (id: string, data: FieldValues) => {
   return res;
 };
 
+export const deleteAuction = async (id: string) => {
+  return fetchWrapper.del({ url: `${AUCTION_ENDPOINT}/${id}` });
+};
+
 export async function updateAuctionTest() {
   return fetchWrapper.put({
     url: `${AUCTION_ENDPOINT}/${TEST_AUCTION_ID}`,
