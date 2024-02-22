@@ -3,8 +3,11 @@
 import React, { ChangeEvent, KeyboardEvent, useEffect, useState } from 'react';
 import { FaSearch } from "react-icons/fa";
 import { useParamsStore } from '../hooks/useParamsStore';
+import { usePathname, useRouter } from 'next/navigation';
 
 export default function Search() {
+    const router = useRouter();
+    const pathname = usePathname();
     const { searchTerm, setParams } = useParamsStore(state => ({
         searchTerm: state.searchTerm,
         setParams: state.setParams
@@ -25,6 +28,7 @@ export default function Search() {
     };
 
     const search = () =>{
+        if (pathname !== '/') router.push('/'); // Redirect if not on home page
         setParams({ searchTerm: inputValue }); // Only update global state here
     };
 
