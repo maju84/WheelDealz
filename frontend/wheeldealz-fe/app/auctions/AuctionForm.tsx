@@ -24,11 +24,9 @@ export default function AuctionForm({ auction }: Props) {
     setFocus, // Method to programmatically set focus on a specific form field.
     formState: { 
       isSubmitting, // Flag indicating if the form is currently in the process of being submitted.
-      isValid, // Flag that is true if all form fields meet the validation criteria.
-      isDirty, // Flag indicating if any field has been modified from its initial value.
   }} 
   = useForm({
-    mode: 'onTouched', // trigger validation on access
+    mode: 'onSubmit', // trigger validation on access
     defaultValues: auction ? { 
       make: auction.make, 
       model: auction.model, 
@@ -37,9 +35,6 @@ export default function AuctionForm({ auction }: Props) {
       mileage: auction.mileage 
     } : {},
   });
-
-    // todo: useEffect is the wrong way to be setting default state values.
-    //       react-hook-form has a 'defaultValues' prop that is more appropriate to use.
   
     useEffect(() => {    
       setFocus('make'); // focus on make input when component mounts
@@ -121,7 +116,6 @@ export default function AuctionForm({ auction }: Props) {
         <Button outline color='gray' onClick={ () => router.back() } >Cancel</Button>
         <Button
           isProcessing={isSubmitting}
-          disabled={!isValid || !isDirty}
           type='submit'
           outline color='success'>Submit</Button>
       </div>
