@@ -22,26 +22,28 @@ export default function AuctionForm({ auction }: Props) {
     control,  // Object for controlling input components, including rules for validation.
     handleSubmit, // Function to handle form submission, providing form data to a callback.
     setFocus, // Method to programmatically set focus on a specific form field.
-    reset, // Method to reset the form to its initial state.
     formState: { 
       isSubmitting, // Flag indicating if the form is currently in the process of being submitted.
       isValid, // Flag that is true if all form fields meet the validation criteria.
       isDirty, // Flag indicating if any field has been modified from its initial value.
-      }} 
-      = useForm(
-        { mode: 'onTouched' } // trigger validation on access
-    );
+  }} 
+  = useForm({
+    mode: 'onTouched', // trigger validation on access
+    defaultValues: auction ? { 
+      make: auction.make, 
+      model: auction.model, 
+      color: auction.color, 
+      year: auction.year, 
+      mileage: auction.mileage 
+    } : {},
+  });
 
     // todo: useEffect is the wrong way to be setting default state values.
     //       react-hook-form has a 'defaultValues' prop that is more appropriate to use.
   
-    useEffect(() => {
-    if (auction) {
-      const { make, model, color, year, mileage } = auction;
-      reset({ make, model, color, year, mileage });
-    }
-    setFocus('make'); // focus on make input when component mounts
-  }, [auction, reset, setFocus]);   // trigger only once, when component mounts and setFocus changes
+    useEffect(() => {    
+      setFocus('make'); // focus on make input when component mounts
+  }, [setFocus]);   // trigger only once, when component mounts and setFocus changes
 
 
   const onSubmit = async (data: FieldValues) => {
@@ -116,7 +118,7 @@ export default function AuctionForm({ auction }: Props) {
 
 
       <div className='flex justify-between'>
-        <Button outline color='gray'>Cancel</Button>
+        <Button outline color='gray' onClick={ () => router.back() } >Cancel</Button>
         <Button
           isProcessing={isSubmitting}
           disabled={!isValid || !isDirty}
