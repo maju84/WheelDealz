@@ -1,3 +1,4 @@
+using BiddingService.Consumers;
 using MassTransit;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using MongoDB.Driver;
@@ -14,6 +15,9 @@ builder.Services.AddControllers();
 // MassTransit
 builder.Services.AddMassTransit(x =>
 {
+    // all consumers in the same namespace as AuctionCreatedConsumer are added
+    x.AddConsumersFromNamespaceContaining<AuctionCreatedConsumer>();    
+
     x.SetEndpointNameFormatter(new KebabCaseEndpointNameFormatter(BidServiceName, false));
 
     x.UsingRabbitMq((context, cfg) =>
