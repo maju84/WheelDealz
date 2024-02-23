@@ -4,6 +4,13 @@ Learning project for me personally, as an old Java / Spring (Boot) dude who want
 how long it takes to do it with the long-unused C#, .NET, and associated ecosystem 
 (After work hours.)
 
+**short foreword on comments in a learner's project:**
+As this is my learning project, I use a lot more comments than in productive projects (where I try to avoid them as much as possible [as they scale poorly] by writing code that doesn't need comments). I use the comments as a memory aid and to record certain learnings.
+
+And I think `todo`s (and `fixme`s) are acceptable for hobby/learning projects. You want to make progress after all.
+Of course _not_ in a professional environment with the sole exception of _spikes or prototypes_.
+
+
 ## Tech-Stack
 1. C#, .NET
 1. EntityFramework
