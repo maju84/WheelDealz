@@ -48,6 +48,9 @@ builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 // add our BackgroundService that polls database for finished auctions
 builder.Services.AddHostedService<CheckAuctionFinishedService>();
 
+// add our GrpcAuctionClient
+builder.Services.AddScoped<GrpcAuctionClient>();
+
 var app = builder.Build();
 
 // app.UseAuthentication();

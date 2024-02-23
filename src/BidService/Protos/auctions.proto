@@ -1,0 +1,24 @@
+syntax = "proto3";
+
+import "google/protobuf/timestamp.proto";
+
+option csharp_namespace = "BidService.Protos";
+
+service GRPCAuction {
+    rpc GetAuction(GetAuctionRequest) returns (GetAuctionResponse);
+}
+
+message GetAuctionRequest { 
+    string id = 1;
+}
+
+message AuctionModel {
+    string id = 1;
+    string seller = 2;
+    google.protobuf.Timestamp auction_end = 3;
+    int32 reserve_price = 4;
+}
+
+message GetAuctionResponse {
+    AuctionModel auction = 1;
+}
