@@ -1,4 +1,5 @@
 using BiddingService.Consumers;
+using BidService.Services;
 using MassTransit;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using MongoDB.Driver;
@@ -42,6 +43,10 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
     });
 
 builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
+
+
+// add our BackgroundService that polls database for finished auctions
+builder.Services.AddHostedService<CheckAuctionFinishedService>();
 
 var app = builder.Build();
 
