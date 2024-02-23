@@ -22,9 +22,6 @@ public class AuctionCreatedConsumer : IConsumer<AuctionCreated>
 
         var item = _mapper.Map<Item>(context.Message);
 
-        // fixme remove this!
-        if (item.Model.ToLower() == "quuxfoobar") throw new ArgumentException("Invalid model name!");
-
         await item.SaveAsync();
     }
 }
