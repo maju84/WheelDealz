@@ -1,13 +1,18 @@
 using MassTransit;
+using NotificationService.Consumers;
+using NotificationService.Hubs;
 
-const string NotificationServiceName = "notification-svc";
+const string NOTIFICATION_SERVICE_NAME = "notification-svc";
+const string NOTIFICATION_HUB_ROUTE_PATTERN = "/notifications";
 
 var builder = WebApplication.CreateBuilder(args);
 
 // MassTransit
 builder.Services.AddMassTransit(x =>{ 
 
-    x.SetEndpointNameFormatter(new KebabCaseEndpointNameFormatter(NotificationServiceName, false));
+    x.AddConsumersFromNamespaceContaining<AuctionCreatedConsumer>();
+
+    x.SetEndpointNameFormatter(new KebabCaseEndpointNameFormatter(NOTIFICATION_SERVICE_NAME, false));
 
     x.UsingRabbitMq((context, cfg) =>
     {
@@ -21,9 +26,10 @@ builder.Services.AddMassTransit(x =>{
     });
 });
 
+builder.Services.AddSignalR();
 
 var app = builder.Build();
 
-
+app.MapHub<NotificationHub>(NOTIFICATION_HUB_ROUTE_PATTERN);
 
 app.Run();
