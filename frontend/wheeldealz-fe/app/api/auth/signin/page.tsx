@@ -1,12 +1,12 @@
-import EmptyFilters from '@/app/components/EmptyFilters';
+import EmptyFilter from '@/app/components/EmptyFilter';
 import React from 'react';
 
 export default function page({ searchParams }: 
     { searchParams: { callbackUrl: string;}}) {
   return (
-    <EmptyFilters
+    <EmptyFilter
         title='You need to be logged in to see this page.'
-        subtile='Please click below to login.'
+        subtitle='Please click below to login.'
         showLogin
         callbackUrl={ searchParams.callbackUrl }
     />

@@ -4,7 +4,7 @@ import React from 'react';
 import AuctionCard from './AuctionCard';
 import AppPagination from '../components/AppPagination';
 import Filters from './Filters';
-import EmptyFilters from '../components/EmptyFilters';
+import EmptyFilter from '../components/EmptyFilter';
 import { useAuctionsWithSearchParams } from '../hooks/useAuctionsWithSearchParams';
 
 export default function Listings() {
@@ -16,7 +16,7 @@ export default function Listings() {
         <>
             <Filters />
             {totalCount === 0 ? (
-                <EmptyFilters showReset />
+                <EmptyFilter showReset />
             ) : (
                 <>
                     <div className='grid grid-cols-4 gap-6'>

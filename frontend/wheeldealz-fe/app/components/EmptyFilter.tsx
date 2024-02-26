@@ -8,16 +8,16 @@ import { signIn } from 'next-auth/react';
 
 type Props = {
     title?: string;
-    subtile?: string;
+    subtitle?: string;
     showReset?: boolean;
 
     showLogin?: boolean;    // todo - not really the best place for this
     callbackUrl?: string;
 }
 
-export default function EmptyFilters({
+export default function EmptyFilter({
     title = 'No results found.',
-    subtile = 'Try changing the filters or reset them.',
+    subtitle: subtile = 'Try changing the filters or reset them.',
     showReset,
     showLogin,
     callbackUrl
