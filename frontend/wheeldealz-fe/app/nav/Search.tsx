@@ -40,11 +40,7 @@ export default function Search() {
             value={inputValue} // Use local state value here
             type="text" 
             placeholder="Search for cars by make, model or color" 
-            className='
-                flex-grow pl-5 bg-transparent
-                focus:outline-none focus:ring-0 focus:border-none 
-                focus:ring-transparent border-transparent 
-                text-sm text-gray-600'
+            className='input-custom text-sm text-gray-600'
         />
         <button type="button" onClick={search}>   {/* just pass in the search function  */}
           <FaSearch size={38}
