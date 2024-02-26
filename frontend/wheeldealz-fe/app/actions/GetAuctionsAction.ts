@@ -13,7 +13,8 @@ const QUERY_PARAMS_DEFAULT = new URLSearchParams({
 }).toString();
 
 const SEARCH_ENDPOINT = 'search';
-const AUCTION_ENDPOINT = 'auctions';
+const AUCTIONS_ENDPOINT = 'auctions';
+const BIDS_ENDPOINT = 'bids';
 
 const TEST_AUCTION_ID = 'afbee524-5972-4075-8800-7d1f9d7b0a0c'; // todo. (see AuctionSvc' DbInitializer)
 
@@ -31,28 +32,34 @@ export const getPagedAuctionsFromSearch = async ({ queryParams = QUERY_PARAMS_DE
 };
 
 export const createAuction = async (data: FieldValues) => {   // todo i don't like this type *here*
-  return fetchWrapper.post({ url: AUCTION_ENDPOINT, body: data });
+  return fetchWrapper.post({ url: AUCTIONS_ENDPOINT, body: data });
 };
 
 export const getAuctionDetails = async (id: string): Promise<Auction> => {
-  return fetchWrapper.get({ url: `${AUCTION_ENDPOINT}/${id}` });
+  return fetchWrapper.get({ url: `${AUCTIONS_ENDPOINT}/${id}` });
 };
 
 export const updateAuction = async (id: string, data: FieldValues) => {
-  const res = fetchWrapper.put({ url: `${AUCTION_ENDPOINT}/${id}`, body: data });
+  const res = fetchWrapper.put({ url: `${AUCTIONS_ENDPOINT}/${id}`, body: data });
   revalidatePath(`/auctions/${id}`);
   return res;
 };
 
 export const deleteAuction = async (id: string) => {
-  return fetchWrapper.del({ url: `${AUCTION_ENDPOINT}/${id}` });
+  return fetchWrapper.del({ url: `${AUCTIONS_ENDPOINT}/${id}` });
+};
+
+export const getBidsForAuction = async (auctionId: string) => {
+  return fetchWrapper.get({ url: `${BIDS_ENDPOINT}/${auctionId}` });
 };
 
 export async function updateAuctionTest() {
   return fetchWrapper.put({
-    url: `${AUCTION_ENDPOINT}/${TEST_AUCTION_ID}`,
+    url: `${AUCTIONS_ENDPOINT}/${TEST_AUCTION_ID}`,
     body: { mileage: Math.floor(Math.random() * 100000)+1 }
   });
 }
+
+
 
 
