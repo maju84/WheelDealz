@@ -49,9 +49,15 @@ export const deleteAuction = async (id: string) => {
   return fetchWrapper.del({ url: `${AUCTIONS_ENDPOINT}/${id}` });
 };
 
+
 export const getBidsForAuction = async (auctionId: string) => {
   return fetchWrapper.get({ url: `${BIDS_ENDPOINT}/${auctionId}` });
 };
+
+export const placeBidForAuction = async (auctionId: string, amount: number) => {
+  return fetchWrapper.post({ url: `${BIDS_ENDPOINT}?auctionId=${auctionId}&amount=${amount}`, body: {} });
+};
+
 
 export async function updateAuctionTest() {
   return fetchWrapper.put({
