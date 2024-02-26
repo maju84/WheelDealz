@@ -66,8 +66,6 @@ const handleResponse = async (response: Response) => {
       try {
         data = JSON.parse(text);
       } catch (error) {
-        // If JSON parsing fails, log the error and use the raw text as the data.
-        console.error('Error parsing JSON:', error);
         data = text;
       }
     } else {
@@ -77,13 +75,12 @@ const handleResponse = async (response: Response) => {
     if (response.ok) {
       return data;
     } else {
-      // When the response is not ok, construct an error object with more context.
-      const errorDetail = {
+      // If response is not ok, make an error object with more context.
+      const error = {
         status: response.status,
-        message: data || 'An error occurred' // Fallback to a generic message if data is empty.
+        message: data || 'An error occurred' // generic fallback message
       };
-    //   throw new Error(JSON.stringify(errorDetail)); // Throwing an error instead of returning an error object.
-      return {error: errorDetail};
+      return {error};
     }
   };
   
