@@ -22,7 +22,11 @@ export default function BidForm({ auctionId, highBid }: Props) {
                 if (bid.error) {
                     throw bid.error;
                 }
-                addBid(bid);
+
+                // no since we add received bids from SignalR to bids store (see SignalProvider.tsx) 
+                // this is kind of redundant but not wrong. addBid checks for duplicates
+                addBid(bid);    
+                
                 reset();
             })
             .catch(err => {
