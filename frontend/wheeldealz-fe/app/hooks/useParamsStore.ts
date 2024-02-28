@@ -38,7 +38,7 @@ export const useParamsStore = createWithEqualityFn<State & Action>(
     ...initialState,    // initialize store with initial state using spread operator '...'
 
     setParams: (newParams: Partial<State>) => { // allows partial update of the store's state.
-        console.log("Updating params with:", newParams);
+        
         // `set` is a Zustand function to update the store's state. x
         // It accepts a callback with the current state.
         set((state) => {

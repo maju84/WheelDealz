@@ -11,9 +11,7 @@ export async function getSession() {
 export async function getCurrentUser() {
     try {
         const session = await getSession();
-
-        console.log("Session:", session);
-
+        
         if (!session) {
             return null;
         }
