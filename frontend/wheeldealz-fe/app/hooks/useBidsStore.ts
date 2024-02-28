@@ -3,16 +3,19 @@ import { shallow } from "zustand/shallow";
 import { createWithEqualityFn } from "zustand/traditional";
 
 type State = {
-    bids: Bid[]
+    bids: Bid[],
+    isOpen: boolean
 }
 
 type Actions = {
     setBids: (bids: Bid[]) => void
     addBid: (bid: Bid) => void
+    setIsOpen: (isOpen: boolean) => void
 }
 
 export const useBidsStore = createWithEqualityFn<State & Actions>((set) => ({
     bids: [],
+    isOpen: true,
 
     setBids: (bids: Bid[]) => {
         set(() => ({
@@ -31,4 +34,10 @@ export const useBidsStore = createWithEqualityFn<State & Actions>((set) => ({
         });
     },
 
+    setIsOpen: (isOpen: boolean) => {
+        set(() => ({
+            isOpen: isOpen
+        }));
+    },
+    
 }), shallow);

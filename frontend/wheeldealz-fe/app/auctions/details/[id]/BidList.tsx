@@ -22,6 +22,8 @@ type Props = {
 export default function BidList({ auction, user}: Props) {
     const [loading, setLoading] = useState(true);
     const allBids = useBidsStore(state => state.bids);
+    const isOpen = useBidsStore(state => state.isOpen);
+    const setIsOpen = useBidsStore(state => state.setIsOpen);
     const setBids = useBidsStore(state => state.setBids);
 
     // Calculate highest bid amount from an array of bids where the bid status includes "Accepted".
@@ -43,6 +45,12 @@ export default function BidList({ auction, user}: Props) {
                 toast.error(err.message || 'Failed to load bids');
             }).finally(() => setLoading(false));
     }, [auction.id, setBids]);
+
+    // reset isOpen flag when accessing *and* leaving the page
+    useEffect(() => {
+        setIsOpen(true);                // on access
+        return () => setIsOpen(true);   // on leave
+    }, [setIsOpen]);
 
 
     if (loading) return <span>Loading bids...</span>;
@@ -68,20 +76,27 @@ export default function BidList({ auction, user}: Props) {
             </div>
 
             <div className='px-2 pb-2 text-gray-500'>
-                {!user ? (
+                { !auction.status?.includes('Live') || !isOpen ? (    // fixme pretty brittle 
                     <div className='flex items-center justify-center p-2 text-lg font-semibold'>
-                        Please login to place a bid.
+                        Auction has finished. Bidding is closed.
                     </div>
-                    ) : user && user.username === auction.seller ? (
+                ) : (
+                    !user ? (
                         <div className='flex items-center justify-center p-2 text-lg font-semibold'>
-                            You cannot place a bid on your own auction.
+                            Please login to place a bid.
                         </div>
+                        ) : user && user.username === auction.seller ? (
+                            <div className='flex items-center justify-center p-2 text-lg font-semibold'>
+                                You cannot place a bid on your own auction.
+                            </div>
 
-                    ) : (
-                        <BidForm auctionId={auction.id} highBid={highestBid} />
+                        ) : (
+                            <BidForm auctionId={auction.id} highBid={highestBid} />
+                        )
                     )}
                 
             </div>
         </div>
     );
-}
+
+ }
