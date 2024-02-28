@@ -24,11 +24,8 @@ export default function BidList({ auction, user}: Props) {
     const allBids = useBidsStore(state => state.bids);
     const setBids = useBidsStore(state => state.setBids);
 
-    // Filter bids for the current auction
-    const bidsForCurrentAuction = allBids.filter(bid => bid.auctionId === auction.id);
-
     // Calculate highest bid amount from an array of bids where the bid status includes "Accepted".
-    const highestBid = bidsForCurrentAuction.reduce((prev, current) => prev > current.amount
+    const highestBid = allBids.reduce((prev, current) => prev > current.amount
         ? prev
         : current.bidStatus.includes('Accepted')
             ? current.amount
@@ -63,7 +60,7 @@ export default function BidList({ auction, user}: Props) {
                     <EmptyFilter title='No bids so far...' subtitle='Feel free to make a bid!' />
                 ) : (
                     <>
-                        {bidsForCurrentAuction.map(bid => (
+                        {allBids.map(bid => (
                             <BidItem key={bid.id} bid={bid} />
                         ))}
                     </>

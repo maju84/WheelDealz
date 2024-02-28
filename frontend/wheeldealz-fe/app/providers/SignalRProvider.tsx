@@ -5,6 +5,7 @@ import { useAuctionsStore } from '../hooks/useAuctionsStore';
 import { HubConnection, HubConnectionBuilder } from '@microsoft/signalr';
 import { Bid } from '@/types';
 import { useBidsStore } from '../hooks/useBidsStore';
+import { usePathname } from 'next/navigation';
 
 const BID_PLACED_EVENT_NAME = 'BidPlaced';  // ! must match exactly sender's magic string !
 const NOTIFICATIONS_URL = 'http://localhost:6001/notifications';
@@ -13,11 +14,11 @@ const NOTIFICATIONS_URL = 'http://localhost:6001/notifications';
 type Props = {
     children: ReactNode
 }
-
 export default function SignalRProvider({ children }: Props) {
     const [connection, setConnection] = useState<HubConnection | null>(null);
     const { setCurrentPrice } = useAuctionsStore();
     const { addBid } = useBidsStore();
+    const pathname = usePathname();
 
     useEffect(() => {
         const newConnection = new HubConnectionBuilder()
@@ -37,7 +38,10 @@ export default function SignalRProvider({ children }: Props) {
                             if (bid.bidStatus.includes('Accepted')) {
                                 setCurrentPrice(bid.auctionId, bid.amount);
                             }
-                            addBid(bid);
+                            // only add bids if we are on this auction's details page
+                            if(pathname.includes(bid.auctionId)) {
+                                addBid(bid);
+                              }
                     });
                 }).catch(err => console.log(err));
         }
@@ -48,7 +52,7 @@ export default function SignalRProvider({ children }: Props) {
 
         };
 
-    }, [addBid, connection, setCurrentPrice]);
+    }, [addBid, pathname, connection, setCurrentPrice]);
 
   return (
     children
