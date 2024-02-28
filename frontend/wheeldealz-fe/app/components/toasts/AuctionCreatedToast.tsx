@@ -7,7 +7,7 @@ type Props = {
     auction: Auction
 }
 
-const AUCTION_DETAILS_ENDPOINT = '/auctions/details/';
+const AUCTION_DETAILS_ENDPOINT = '/auctions/details/';  // todo at least centralize this if not pulling out into config
 
 export default function AuctionCreatedToast({ auction }: Props) {
   return (

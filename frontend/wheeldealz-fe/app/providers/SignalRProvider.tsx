@@ -3,15 +3,19 @@
 import { ReactNode, useEffect, useState } from 'react';
 import { useAuctionsStore } from '../hooks/useAuctionsStore';
 import { HubConnection, HubConnectionBuilder } from '@microsoft/signalr';
-import { Auction, Bid } from '@/types';
+import { Auction, AuctionFinished, Bid } from '@/types';
 import { useBidsStore } from '../hooks/useBidsStore';
 import { usePathname } from 'next/navigation';
 import { Session } from 'next-auth';
 import AuctionCreatedToast from '../components/toasts/AuctionCreatedToast';
 import toast from 'react-hot-toast';
+import { getAuctionDetails } from '../actions/GetAuctionsAction';
+import AuctionFinishedToast from '../components/toasts/AuctionFinishedToast';
 
+// todo at least centralize this if not pulling out into config
 const BID_PLACED_EVENT_NAME = 'BidPlaced';  // ! must match exactly sender's magic string !
 const AUCTION_CREATED_EVENT_NAME = 'AuctionCreated'; 
+const AUCTION_FINISHED_EVENT_NAME = 'AuctionFinished';
 
 const NOTIFICATIONS_URL = 'http://localhost:6001/notifications';
 
@@ -50,16 +54,30 @@ export default function SignalRProvider({ children, user }: Props) {
                         if (bid.bidStatus.includes('Accepted')) {
                             setCurrentPrice(bid.auctionId, bid.amount);
                         }
-                        // only add bids if we are on this auction's details page
+                        // only add bids if we are currently on this auction's details page
                         if(pathname.includes(bid.auctionId)) {
                             addBid(bid);
                         }
                     });
 
+
                     connection.on(AUCTION_CREATED_EVENT_NAME, (auction: Auction) => {
                         if (user?.username !== auction.seller) {
                             showAuctionCreatedToast(auction);
                         }
+                    });
+
+
+                    
+                    connection.on(AUCTION_FINISHED_EVENT_NAME, (finishedAuction: AuctionFinished) => {
+                        const auction = getAuctionDetails( finishedAuction.auctionId );
+
+                        return toast.promise(auction, {
+                            loading: 'Loading...',
+                            success: (auction) => 
+                                <AuctionFinishedToast auction={ auction } finishedAuction={ finishedAuction } />,                                                       
+                            error: () => 'Auction finished!'
+                        }, { success: { duration: 10_000, icon: null }});                        
                     });
 
                 }).catch(err => console.log(err));
@@ -71,6 +89,7 @@ export default function SignalRProvider({ children, user }: Props) {
             connection?.stop();
             connection?.off(BID_PLACED_EVENT_NAME);
             connection?.off(AUCTION_CREATED_EVENT_NAME);
+            connection?.off(AUCTION_FINISHED_EVENT_NAME);
 
         };
 
