@@ -17,6 +17,11 @@ export default function BidForm({ auctionId, highBid }: Props) {
     const { addBid } = useBidsStore();
 
     const onSubmit = (data: FieldValues) => {
+        if (data.amount <= highBid) {
+            reset();
+            return toast.error('Your bid must be higher than the current bid');
+        }
+
         placeBidForAuction(auctionId, +data.amount) // Convert amount string to number
             .then((bid) => {
                 if (bid.error) {
