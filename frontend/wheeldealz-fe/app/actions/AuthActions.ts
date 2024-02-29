@@ -1,27 +1,53 @@
 import { getServerSession } from "next-auth";
-import { authOptions } from "../api/auth/[...nextauth]/route";
 import { cookies, headers } from "next/headers";
 import { NextApiRequest } from "next";
 import { getToken } from "next-auth/jwt";
+import { authOptions } from "../api/auth/[...nextauth]/nextauthoptions";
 
 export async function getSession() {
     return await getServerSession(authOptions);
 }
 
 export async function getCurrentUser() {
-    try {
+
+    /*  FIXME
+        putting this call into try/catch gave me 21x (identical) error prints when running 'npm run build':
+
+Failed to get current user: n [Error]: Dynamic server usage: Page couldn't be rendered statically because it used `headers`. See more info here: https://nextjs.org/docs/messages/dynamic-server-error
+    at l (/home/max/repo/dotnet/WheelDealz/frontend/wheeldealz-fe/.next/server/chunks/208.js:30:28881)
+    at u (/home/max/repo/dotnet/WheelDealz/frontend/wheeldealz-fe/.next/server/chunks/208.js:30:25969)
+    at s (/home/max/repo/dotnet/WheelDealz/frontend/wheeldealz-fe/.next/server/chunks/208.js:30:20315)
+    at o (/home/max/repo/dotnet/WheelDealz/frontend/wheeldealz-fe/.next/server/chunks/246.js:1:7398)
+    at l (/home/max/repo/dotnet/WheelDealz/frontend/wheeldealz-fe/.next/server/chunks/246.js:1:7439)
+    at y (/home/max/repo/dotnet/WheelDealz/frontend/wheeldealz-fe/.next/server/chunks/246.js:1:8977)
+    at em (/home/max/repo/dotnet/WheelDealz/frontend/wheeldealz-fe/node_modules/next/dist/compiled/next-server/app-page.runtime.prod.js:12:131226)
+    at /home/max/repo/dotnet/WheelDealz/frontend/wheeldealz-fe/node_modules/next/dist/compiled/next-server/app-page.runtime.prod.js:12:142926
+    at Array.toJSON (/home/max/repo/dotnet/WheelDealz/frontend/wheeldealz-fe/node_modules/next/dist/compiled/next-server/app-page.runtime.prod.js:12:146504)
+    at stringify (<anonymous>) {
+  description: "Page couldn't be rendered statically because it used `headers`. See more info here: https://nextjs.org/docs/messages/dynamic-server-error",
+  digest: 'DYNAMIC_SERVER_USAGE'
+}
+        found good answer on StackOverflow: 
+        https://stackoverflow.com/questions/78010331/dynamic-server-usage-page-couldnt-be-rendered-statically-because-it-used-next/78010468#78010468
+
+    */
+
+    // try {
         const session = await getSession();
         
         if (!session) {
+            console.info("Failed to get session. User is not logged in.");
             return null;
         }
 
         return session.user;
-    }
-    catch (error) {
-        console.error("Failed to get current user:", error);
-        return null;
-    }
+    
+
+    //     }
+//     catch (error) {
+//         console.error("Failed to get current user:", error);
+//         return null;
+//     }
 }
 
 /**
