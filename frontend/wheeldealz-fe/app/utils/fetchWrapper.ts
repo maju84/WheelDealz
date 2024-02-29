@@ -1,6 +1,6 @@
 import { getTokenWorkaround } from "../actions/AuthActions";
 
-const BASE_URL = 'http://localhost:6001/';
+const BASE_URL = process.env.API_URL;
 
 export type BodyType = {
     [key: string]: unknown;

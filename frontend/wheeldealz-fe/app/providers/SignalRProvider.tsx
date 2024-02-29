@@ -17,7 +17,7 @@ type Props = {
     user: Session['user'] | null;
 };
 
-const NOTIFICATIONS_URL = 'http://localhost:6001/notifications'; // process.env.NEXT_PUBLIC__NOTIFICATIONS_URL!; // ! Ensure this is correct !
+const NOTIFICATIONS_URL = process.env.NEXT_PUBLIC__NOTIFICATIONS_URL!; // ! Ensure this is correct !
 
 const EVENT_NAMES = {
     BID_PLACED: 'BidPlaced',
