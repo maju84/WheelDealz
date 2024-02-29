@@ -46,11 +46,15 @@ export default function BidList({ auction, user}: Props) {
             }).finally(() => setLoading(false));
     }, [auction.id, setBids]);
 
-    // reset isOpen flag when accessing *and* leaving the page
+    
+    // tl;dr - reset isOpen flag when the component unmounts
     useEffect(() => {
-        setIsOpen(true);                // on access
-        return () => setIsOpen(true);   // on leave
-    }, [setIsOpen]);
+        // This setup code (if any) runs when the component mounts.
+        // There's no direct setup action here, so it effectively does nothing on mount.    
+        // The return statement defines a cleanup function...
+        return () => setIsOpen(true); // ...which resets isOpen flag when the component unmounts
+    }, [setIsOpen]); // Dependency array includes setIsOpen, but since setIsOpen is stable, the cleanup runs on unmount.
+    
 
 
     if (loading) return <span>Loading bids...</span>;
