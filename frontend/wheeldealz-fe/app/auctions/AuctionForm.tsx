@@ -14,6 +14,12 @@ type Props = {
   auction?: Auction
 }
 
+type ApiError = {
+  status: string;
+  message: string;
+};
+
+
 export default function AuctionForm({ auction }: Props) {
   const router = useRouter();
   const pathname = usePathname();
@@ -66,8 +72,9 @@ export default function AuctionForm({ auction }: Props) {
         throw res.error;
       }
       router.push(`/auctions/details/${id}`); // todo 
-    } catch (error: any) { // fixme - linter err about any
-        toast.error(error.status + ' ' + error.message, { duration: 5000 });
+    } catch (error) { 
+        const apiErr = error as ApiError;
+        toast.error(`${apiErr.status} ${apiErr.message}`, { duration: 5_000 });
     }
   };
 
