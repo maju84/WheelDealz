@@ -1,38 +1,37 @@
 'use client';
 
-import { ReactNode, useEffect, useState } from 'react';
-import { useAuctionsStore } from '../hooks/useAuctionsStore';
+import React, { ReactNode, useEffect, useState } from 'react';
 import { HubConnection, HubConnectionBuilder } from '@microsoft/signalr';
 import { Auction, AuctionFinished, Bid } from '@/types';
+import toast from 'react-hot-toast';
+import { useAuctionsStore } from '../hooks/useAuctionsStore';
 import { useBidsStore } from '../hooks/useBidsStore';
 import { usePathname } from 'next/navigation';
-import { Session } from 'next-auth';
 import AuctionCreatedToast from '../components/toasts/AuctionCreatedToast';
-import toast from 'react-hot-toast';
-import { getAuctionDetails } from '../actions/GetAuctionsAction';
 import AuctionFinishedToast from '../components/toasts/AuctionFinishedToast';
+import { getAuctionDetails } from '../actions/GetAuctionsAction';
+import { Session } from 'next-auth';
 
-// Centralized event names (consider moving these to a config file)
-const BID_PLACED_EVENT_NAME = 'BidPlaced';
-const AUCTION_CREATED_EVENT_NAME = 'AuctionCreated';
-const AUCTION_FINISHED_EVENT_NAME = 'AuctionFinished';
-
-const NOTIFICATIONS_URL = 'http://localhost:6001/notifications';
 
 type Props = {
     children: ReactNode;
     user: Session['user'] | null;
 };
 
+
+const NOTIFICATIONS_URL = 'http://localhost:6001/notifications'; // process.env.NEXT_PUBLIC__NOTIFICATIONS_URL!; // ! Ensure this is correct !
+
+const EVENT_NAMES = {
+    BID_PLACED: 'BidPlaced',
+    AUCTION_CREATED: 'AuctionCreated',
+    AUCTION_FINISHED: 'AuctionFinished',
+};
+
 export default function SignalRProvider({ children, user }: Props) {
     const [connection, setConnection] = useState<HubConnection | null>(null);
+    const pathname = usePathname();
     const { setCurrentPrice } = useAuctionsStore();
     const { addBid, setIsOpen } = useBidsStore();
-    const pathname = usePathname();
-
-    const showAuctionCreatedToast = (auction: Auction) => {
-        toast(<AuctionCreatedToast auction={auction} />, { duration: 10_000 });
-    };
 
     useEffect(() => {
         const newConnection = new HubConnectionBuilder()
@@ -49,7 +48,8 @@ export default function SignalRProvider({ children, user }: Props) {
         const startConnection = async () => {
             try {
                 await connection.start();
-                connection.on(BID_PLACED_EVENT_NAME, (bid: Bid) => {
+
+                connection.on(EVENT_NAMES.BID_PLACED, (bid: Bid) => {
                     if (bid.bidStatus.includes('Accepted')) {
                         setCurrentPrice(bid.auctionId, bid.amount);
                     }
@@ -58,27 +58,25 @@ export default function SignalRProvider({ children, user }: Props) {
                     }
                 });
 
-                connection.on(AUCTION_CREATED_EVENT_NAME, (auction: Auction) => {
+                connection.on(EVENT_NAMES.AUCTION_CREATED, (auction: Auction) => {
                     if (user?.username !== auction.seller) {
-                        showAuctionCreatedToast(auction);
+                        toast(<AuctionCreatedToast auction={auction} />, { duration: 10_000 });
                     }
                 });
 
-                connection.on(AUCTION_FINISHED_EVENT_NAME, async (finishedAuction: AuctionFinished) => {
+                connection.on(EVENT_NAMES.AUCTION_FINISHED, async (finishedAuction: AuctionFinished) => {
                     const auctionDetails = await getAuctionDetails(finishedAuction.auctionId);
+                    if (pathname.includes(finishedAuction.auctionId)) {
+                        setIsOpen(false);
+                    }
                     toast.promise(
-                        Promise.resolve(auctionDetails), {
+                        Promise.resolve(auctionDetails),
+                        {
                             loading: 'Loading...',
-                            success: auction => {
-                                // if the user is on this finished auction's details page
-                                if (pathname.includes(finishedAuction.auctionId)) {
-                                    setIsOpen(false); // set global flag (to close the bid form)
-                                }
-                                return <AuctionFinishedToast auction={auction} finishedAuction={finishedAuction} />;
-                            },
-                            error: 'Auction finished!'
-                        }, { success: { duration: 10_000, icon: null },
-                        }
+                            success: auction => <AuctionFinishedToast auction={auction} finishedAuction={finishedAuction} />,
+                            error: 'Auction finished!',
+                        },
+                        { success: { duration: 10_000, icon: null } }
                     );
                 });
             } catch (err) {
@@ -88,15 +86,17 @@ export default function SignalRProvider({ children, user }: Props) {
 
         startConnection();
 
+        // Cleanup event listeners on component unmount or connection change
         return () => {
-            if (connection) {
-                connection.stop();
-                connection.off(BID_PLACED_EVENT_NAME);
-                connection.off(AUCTION_CREATED_EVENT_NAME);
-                connection.off(AUCTION_FINISHED_EVENT_NAME);
-            }
+            connection?.stop();
+            // try and error to figure out whats the problem with error log message:
+            // "Error: Cannot start a HubConnection that is not in the 'Disconnected' state."
+            
+            // connection.off(EVENT_NAMES.BID_PLACED);
+            // connection.off(EVENT_NAMES.AUCTION_CREATED);
+            // connection.off(EVENT_NAMES.AUCTION_FINISHED);
         };
-    }, [addBid, connection, pathname, setCurrentPrice, setIsOpen, user]);
+    }, [connection, pathname, addBid, setCurrentPrice, setIsOpen, user]);
 
     return children;
 }
