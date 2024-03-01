@@ -19,6 +19,12 @@ type Props = {
 
 const NOTIFICATIONS_URL = process.env.NEXT_PUBLIC__NOTIFICATIONS_URL!; // ! Ensure this is correct !
 
+// this is a quick and dirty workaround to this still "unanswered" issue
+// https://github.com/vercel/next.js/discussions/17641
+// but latest answer points to a pretty interesting approach:
+// https://phase.dev/blog/nextjs-public-runtime-variables/
+const PRODUCTION_NOTIFICATIONS_URL = 'http://api.wheeldealz.tech/notifications';
+
 const EVENT_NAMES = {
     BID_PLACED: 'BidPlaced',
     AUCTION_CREATED: 'AuctionCreated',
@@ -30,6 +36,9 @@ export default function SignalRProvider({ children, user }: Props) {
     const pathname = usePathname();
     const { setCurrentPrice } = useAuctionsStore();
     const { addBid, setIsOpen } = useBidsStore();
+    const notifyUrl = process.env.NODE_ENV === 'production' 
+        ? PRODUCTION_NOTIFICATIONS_URL
+        : NOTIFICATIONS_URL;
 
     // Use a ref to track whether the event listeners have been set up
     const listenersSetUp = useRef(false);
@@ -38,7 +47,7 @@ export default function SignalRProvider({ children, user }: Props) {
         // Initialize connection only once
         if (!connection) {
             const newConnection = new HubConnectionBuilder()
-                .withUrl(NOTIFICATIONS_URL)
+                .withUrl(notifyUrl)
                 .withAutomaticReconnect()
                 .build();
 
@@ -53,7 +62,7 @@ export default function SignalRProvider({ children, user }: Props) {
         };
         // need to include conncection here to get rid of a warning in 'npm run build'
         // but with the useRef flag it works fine anyway
-    }, [connection]); 
+    }, [connection, notifyUrl]); 
 
     useEffect(() => {
         // Setup event listeners only once after the connection is established
