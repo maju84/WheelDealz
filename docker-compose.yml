@@ -87,8 +87,8 @@ services:
       - ASPNETCORE_ENVIRONMENT=Docker
       - ASPNETCORE_URLS=http://+:80
       - ConnectionStrings__DefaultConnection=Server=postgres:5432;User Id=postgres;Password=postgrespw;Database=identitydb
-    ports:
-      - 80:80
+      - ClientApp=http://app.wheeldealz.tech
+      - VIRTUAL_HOST=identity.wheeldealz.tech
     depends_on:
       postgres:
         condition: service_healthy
@@ -101,8 +101,8 @@ services:
     environment:
       - ASPNETCORE_ENVIRONMENT=Docker
       - ASPNETCORE_URLS=http://+:80
-    ports:
-      - 6001:80
+      - ClientApp=http://app.wheeldealz.tech
+      - VIRTUAL_HOST=api.wheeldealz.tech
 
   bid-svc:
     image: maju84/bid-svc:latest
@@ -148,18 +148,17 @@ services:
       dockerfile: frontend/wheeldealz-fe/Dockerfile
     volumes:
       - /var/lib/web/data   # for a cache. no need to persist between restarts
-    ports:
-      - 3000:3000
     links:
       - identity-svc:identity.wheeldealz.tech
     environment:
       - NEXTAUTH_SECRET=somethingsupersecret
-      - NEXTAUTH_URL=http://localhost:3000
+      - NEXTAUTH_URL=http://app.wheeldealz.tech
       - NEXTAUTH_URL_INTERNAL=http://wheeldealz-fe:3000
       - API_URL=http://gateway-svc/
       - IDENTITY_SERVER_URL=http://identity.wheeldealz.tech
       - NEXT_PUBLIC__NOTIFICATIONS_URL=http://gateway-svc/notifications
-
+      - VIRTUAL_HOST=app.wheeldealz.tech
+      - VIRTUAL_PORT=3000
     depends_on:
       auction-svc:
         condition: service_started
@@ -171,6 +170,13 @@ services:
         condition: service_started
       identity-svc:
         condition: service_started
+
+  nginx-proxy:
+    image: nginxproxy/nginx-proxy:1.4-alpine
+    ports:
+      - 80:80
+    volumes:
+      - /var/run/docker.sock:/tmp/docker.sock:ro
 
 
 volumes:
