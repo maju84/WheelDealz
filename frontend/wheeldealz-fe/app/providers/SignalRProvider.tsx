@@ -23,7 +23,7 @@ const NOTIFICATIONS_URL = process.env.NEXT_PUBLIC__NOTIFICATIONS_URL!; // ! Ensu
 // https://github.com/vercel/next.js/discussions/17641
 // but latest answer points to a pretty interesting approach:
 // https://phase.dev/blog/nextjs-public-runtime-variables/
-const PRODUCTION_NOTIFICATIONS_URL = 'http://api.wheeldealz.tech/notifications';
+const PRODUCTION_NOTIFICATIONS_URL = 'https://api.wheeldealz.tech/notifications';
 
 const EVENT_NAMES = {
     BID_PLACED: 'BidPlaced',

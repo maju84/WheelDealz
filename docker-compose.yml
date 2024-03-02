@@ -101,7 +101,7 @@ services:
     environment:
       - ASPNETCORE_ENVIRONMENT=Docker
       - ASPNETCORE_URLS=http://+:80
-      - ClientApp=http://app.wheeldealz.tech
+      - ClientApp=https://app.wheeldealz.tech
       - VIRTUAL_HOST=api.wheeldealz.tech
 
   bid-svc:
@@ -175,8 +175,10 @@ services:
     image: nginxproxy/nginx-proxy:1.4-alpine
     ports:
       - 80:80
+      - 443:443
     volumes:
       - /var/run/docker.sock:/tmp/docker.sock:ro
+      - ./devcerts:/etc/nginx/certs
 
 
 volumes:
