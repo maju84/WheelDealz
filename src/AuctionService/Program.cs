@@ -16,6 +16,16 @@ builder.Services.AddDbContext<AuctionDbContext>(options =>
     options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection"))
 );
 
+
+/*  Registers the AuctionRepository with a scoped lifetime to the application's services, 
+    ensuring a new instance is created for each HTTP request. 
+    This aligns the lifecycle of the AuctionRepository with that of the DbContext it depends on, 
+    facilitating efficient database connection and transaction management. 
+    Scoped services like this are crucial for maintaining data integrity and resource efficiency
+    across individual requests within the web application. 
+*/
+builder.Services.AddScoped<IAuctionRepository, AuctionRepository>();
+
 /* 
     AppDomain.CurrentDomain.GetAssemblies(): 
     This is getting all the assemblies loaded in the current application domain. 
