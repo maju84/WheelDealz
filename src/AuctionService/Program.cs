@@ -92,3 +92,7 @@ catch (Exception e)
 }
 
 app.Run();
+
+// this makes deriving our CustomWebAppFactory from WebApplicationFactory<Program> 
+// in AuctionService.IntegrationTests to work
+public partial class Program {}
