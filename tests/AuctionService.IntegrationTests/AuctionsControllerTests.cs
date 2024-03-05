@@ -36,6 +36,7 @@ public class AuctionsControllerTests : IClassFixture<CustomWebAppFactory>, IAsyn
     }
 
 
+
     [Fact]
     public async Task GetAuctions_ShouldReturn_3Auctions()
     {
@@ -70,7 +71,6 @@ public class AuctionsControllerTests : IClassFixture<CustomWebAppFactory>, IAsyn
         Assert.Equal(_bugattiVeyronId, auction?.Id.ToString());
     }
 
-
     [Fact]
     public async Task GetAuctionById_WithInvalidId_ShouldReturn_NotFound()
     {
@@ -96,6 +96,27 @@ public class AuctionsControllerTests : IClassFixture<CustomWebAppFactory>, IAsyn
         // Assert
         Assert.Equal(HttpStatusCode.BadRequest, response.StatusCode);
     }
+
+
+
+    [Fact]
+    public async Task CreateAuction_WithNoAuth_ShouldReturn_Unauthorized()
+    {
+        // Arrange
+        var createAuctionDto = new CreateAuctionDto{ Make = "Won't", Model = "Work" };
+        var request = new HttpRequestMessage(HttpMethod.Post, _endpoint)
+        {
+            Content = HttpHelper.DtoToJsonContent(createAuctionDto)
+        }; 
+
+        // Act
+        var response = await _httpClient.SendAsync(request);
+
+        // Assert
+        Assert.Equal(HttpStatusCode.Unauthorized, response.StatusCode);
+    }
+
+
 
  
 
