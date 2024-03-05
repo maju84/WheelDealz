@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.TestHost;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Testcontainers.PostgreSql;
+using WebMotions.Fake.Authentication.JwtBearer;
 
 namespace AuctionService.IntegrationTests.Fixtures;
 
@@ -55,7 +56,14 @@ public class CustomWebAppFactory : WebApplicationFactory<Program>, IAsyncLifetim
             services.AddMassTransitTestHarness();
 
             // Initializes and seeds the AuctionDbContext with predefined data for integration testing
-            services.InitializeAndSeedTestDatabase();            
+            services.InitializeAndSeedTestDatabase();    
+
+            // Configures fake JWT bearer authentication to simulate secured API endpoints.
+            // It allows tests to include fake tokens in requests, simplifying authentication flows.  
+            services.AddAuthentication(FakeJwtBearerDefaults.AuthenticationScheme)
+                .AddFakeJwtBearer(options => 
+                    options.BearerValueType = FakeJwtBearerBearerValueType.Jwt
+                );
         });
     }
 
