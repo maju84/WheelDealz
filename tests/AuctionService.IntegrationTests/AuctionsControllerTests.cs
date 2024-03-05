@@ -11,14 +11,7 @@ namespace AuctionService.IntegrationTests;
 public class AuctionsControllerTests : IClassFixture<CustomWebAppFactory>, IAsyncLifetime
 {   
     private readonly CustomWebAppFactory _factory;
-
     private readonly HttpClient _httpClient;
-
-    private const string _endpoint = "api/auctions";    // todo extract out to central place
-    private const string _bugattiVeyronId = "c8c3ec17-01bf-49db-82aa-1ef80b833a9f";     
-
-    private const string _mrBeanUser = "MrBean";
-    private const string _aliceUser = "alice";
 
     public AuctionsControllerTests(CustomWebAppFactory factory)
     {
@@ -46,7 +39,7 @@ public class AuctionsControllerTests : IClassFixture<CustomWebAppFactory>, IAsyn
         // Arrange        
 
         // Act
-        var auctionDtos = await _httpClient.GetFromJsonAsync<List<AuctionDto>>(_endpoint);
+        var auctionDtos = await _httpClient.GetFromJsonAsync<List<AuctionDto>>(TestConstants.Endpoint);
 
         // Assert
         Assert.Equal(3, auctionDtos?.Count);
@@ -58,12 +51,12 @@ public class AuctionsControllerTests : IClassFixture<CustomWebAppFactory>, IAsyn
         // Arrange
 
         // Act
-        var auctionDto = await _httpClient.GetFromJsonAsync<AuctionDto>($"{_endpoint}/{_bugattiVeyronId}");
+        var auctionDto = await _httpClient.GetFromJsonAsync<AuctionDto>($"{TestConstants.Endpoint}/{TestConstants.BugattiVeyronId}");
 
         // Assert
         Assert.Equal("Bugatti", auctionDto?.Make);
         Assert.Equal("Veyron", auctionDto?.Model);
-        Assert.Equal(_bugattiVeyronId, auctionDto?.Id.ToString());
+        Assert.Equal(TestConstants.BugattiVeyronId, auctionDto?.Id.ToString());
     }
 
     [Fact]
@@ -72,7 +65,7 @@ public class AuctionsControllerTests : IClassFixture<CustomWebAppFactory>, IAsyn
         // Arrange
 
         // Act
-        var response = await _httpClient.GetAsync($"{_endpoint}/{Guid.NewGuid()}");
+        var response = await _httpClient.GetAsync($"{TestConstants.Endpoint}/{Guid.NewGuid()}");
 
         // Assert
         Assert.Equal(HttpStatusCode.NotFound, response.StatusCode);
@@ -84,7 +77,7 @@ public class AuctionsControllerTests : IClassFixture<CustomWebAppFactory>, IAsyn
         // Arrange
 
         // Act
-        var response = await _httpClient.GetAsync($"{_endpoint}/NotEvenAGuid");
+        var response = await _httpClient.GetAsync($"{TestConstants.Endpoint}/NotEvenAGuid");
 
         // Assert
         Assert.Equal(HttpStatusCode.BadRequest, response.StatusCode);
@@ -99,7 +92,7 @@ public class AuctionsControllerTests : IClassFixture<CustomWebAppFactory>, IAsyn
         var auction = new CreateAuctionDto { Make = "Won't Matter" };
 
         // Act
-        var response = await _httpClient.PostAsJsonAsync(_endpoint, auction);
+        var response = await _httpClient.PostAsJsonAsync(TestConstants.Endpoint, auction);
 
         // Assert
         Assert.Equal(HttpStatusCode.Unauthorized, response.StatusCode);
@@ -110,16 +103,16 @@ public class AuctionsControllerTests : IClassFixture<CustomWebAppFactory>, IAsyn
     {
         // Arrange
         var auction = TestData.GetTestAuction();        
-        _httpClient.SetFakeJwtBearerToken(AuthHelper.GetBearerForUser(_mrBeanUser));
+        _httpClient.SetFakeJwtBearerToken(AuthHelper.GetBearerForUser(TestConstants.MrBeanUser));
 
         // Act
-        var response = await _httpClient.PostAsJsonAsync(_endpoint, auction);
+        var response = await _httpClient.PostAsJsonAsync(TestConstants.Endpoint, auction);
 
         // Assert
         response.EnsureSuccessStatusCode();
         Assert.Equal(HttpStatusCode.Created, response.StatusCode);
         var returnedAuctionDto = await response.Content.ReadFromJsonAsync<AuctionDto>();
-        Assert.Equal(_mrBeanUser, returnedAuctionDto.Seller);
+        Assert.Equal(TestConstants.MrBeanUser, returnedAuctionDto.Seller);
     }
     
     [Fact]
@@ -128,10 +121,10 @@ public class AuctionsControllerTests : IClassFixture<CustomWebAppFactory>, IAsyn
         // Arrange
         var auction = TestData.GetTestAuction();
         auction.Make = null;
-        _httpClient.SetFakeJwtBearerToken(AuthHelper.GetBearerForUser(_mrBeanUser));
+        _httpClient.SetFakeJwtBearerToken(AuthHelper.GetBearerForUser(TestConstants.MrBeanUser));
 
         // Act
-        var response = await _httpClient.PostAsJsonAsync(_endpoint, auction);
+        var response = await _httpClient.PostAsJsonAsync(TestConstants.Endpoint, auction);
 
         // Assert
         Assert.Equal(HttpStatusCode.BadRequest, response.StatusCode);
@@ -142,10 +135,10 @@ public class AuctionsControllerTests : IClassFixture<CustomWebAppFactory>, IAsyn
     {
         // Arrange
         var updateAuction = new UpdateAuctionDto { Make = "Updated" };
-        _httpClient.SetFakeJwtBearerToken(AuthHelper.GetBearerForUser(_aliceUser));
+        _httpClient.SetFakeJwtBearerToken(AuthHelper.GetBearerForUser(TestConstants.AliceUser));
 
         // Act
-        var response = await _httpClient.PutAsJsonAsync($"{_endpoint}/{_bugattiVeyronId}", updateAuction);
+        var response = await _httpClient.PutAsJsonAsync($"{TestConstants.Endpoint}/{TestConstants.BugattiVeyronId}", updateAuction);
 
         // Assert
         Assert.Equal(HttpStatusCode.OK, response.StatusCode);
@@ -156,10 +149,10 @@ public class AuctionsControllerTests : IClassFixture<CustomWebAppFactory>, IAsyn
     {
         // Arrange
         var updateAuction = new UpdateAuctionDto { Make = "Updated" };
-        _httpClient.SetFakeJwtBearerToken(AuthHelper.GetBearerForUser(_mrBeanUser));    // *not* bob
+        _httpClient.SetFakeJwtBearerToken(AuthHelper.GetBearerForUser(TestConstants.MrBeanUser));    // *not* bob
 
         // Act
-        var response = await _httpClient.PutAsJsonAsync($"{_endpoint}/{_bugattiVeyronId}", updateAuction);
+        var response = await _httpClient.PutAsJsonAsync($"{TestConstants.Endpoint}/{TestConstants.BugattiVeyronId}", updateAuction);
 
         // Assert
         Assert.Equal(HttpStatusCode.Forbidden, response.StatusCode);
