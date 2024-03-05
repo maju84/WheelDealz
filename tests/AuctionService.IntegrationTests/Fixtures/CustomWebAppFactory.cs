@@ -54,10 +54,8 @@ public class CustomWebAppFactory : WebApplicationFactory<Program>, IAsyncLifetim
             // internally replaces the MassTransit service registration with the MassTransitTestHarness
             services.AddMassTransitTestHarness();
 
-            // todo add 1-2 line/s explaining 
-            services.EnsureCreatedAndSeeded();
-
-            
+            // Initializes and seeds the AuctionDbContext with predefined data for integration testing
+            services.InitializeAndSeedTestDatabase();            
         });
     }
 

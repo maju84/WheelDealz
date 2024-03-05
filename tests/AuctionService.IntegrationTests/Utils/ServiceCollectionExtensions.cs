@@ -16,7 +16,7 @@ public static class ServiceCollectionExtensions
     }
 
 
-    public static void EnsureCreatedAndSeeded(this IServiceCollection services)
+    public static void InitializeAndSeedTestDatabase(this IServiceCollection services)
     {
         // Build the service provider to apply configurations
         var sp = services.BuildServiceProvider();
