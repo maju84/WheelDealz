@@ -1,10 +1,10 @@
 using System.Net;
+using System.Net.Http.Json;
 using AuctionService.Data;
 using AuctionService.DTOs;
 using AuctionService.IntegrationTests.Fixtures;
 using AuctionService.IntegrationTests.Utils;
 using Microsoft.Extensions.DependencyInjection;
-using Newtonsoft.Json;
 
 namespace AuctionService.IntegrationTests;
 
@@ -40,45 +40,36 @@ public class AuctionsControllerTests : IClassFixture<CustomWebAppFactory>, IAsyn
     [Fact]
     public async Task GetAuctions_ShouldReturn_3Auctions()
     {
-        // Arrange
-        var request = new HttpRequestMessage(HttpMethod.Get, _endpoint);      
+        // Arrange        
 
         // Act
-        var response = await _httpClient.SendAsync(request);
-        var content = await response.Content.ReadAsStringAsync();
-        var auctions = JsonConvert.DeserializeObject<List<AuctionDto>>(content);
+        var auctionDtos = await _httpClient.GetFromJsonAsync<List<AuctionDto>>(_endpoint);
 
         // Assert
-        Assert.Equal(HttpStatusCode.OK, response.StatusCode);
-        Assert.Equal(3, auctions?.Count);
+        Assert.Equal(3, auctionDtos?.Count);
     }
 
     [Fact]
     public async Task GetAuctionById_WithValidId_ShouldReturn_Auction()
     {
         // Arrange
-        var request = new HttpRequestMessage(HttpMethod.Get, $"{_endpoint}/{_bugattiVeyronId}");      
 
         // Act
-        var response = await _httpClient.SendAsync(request);
-        var content = await response.Content.ReadAsStringAsync();
-        var auction = JsonConvert.DeserializeObject<AuctionDto>(content);
+        var auctionDto = await _httpClient.GetFromJsonAsync<AuctionDto>($"{_endpoint}/{_bugattiVeyronId}");
 
         // Assert
-        Assert.Equal(HttpStatusCode.OK, response.StatusCode);
-        Assert.Equal("Bugatti", auction?.Make);
-        Assert.Equal("Veyron", auction?.Model);
-        Assert.Equal(_bugattiVeyronId, auction?.Id.ToString());
+        Assert.Equal("Bugatti", auctionDto?.Make);
+        Assert.Equal("Veyron", auctionDto?.Model);
+        Assert.Equal(_bugattiVeyronId, auctionDto?.Id.ToString());
     }
 
     [Fact]
     public async Task GetAuctionById_WithInvalidId_ShouldReturn_NotFound()
     {
         // Arrange
-        var request = new HttpRequestMessage(HttpMethod.Get, $"{_endpoint}/{Guid.NewGuid()}");      
 
         // Act
-        var response = await _httpClient.SendAsync(request);
+        var response = await _httpClient.GetAsync($"{_endpoint}/{Guid.NewGuid()}");
 
         // Assert
         Assert.Equal(HttpStatusCode.NotFound, response.StatusCode);
@@ -88,10 +79,9 @@ public class AuctionsControllerTests : IClassFixture<CustomWebAppFactory>, IAsyn
     public async Task GetAuctionById_WithNotEvenAGuid_ShouldReturn_BadRequest()
     {
         // Arrange
-        var request = new HttpRequestMessage(HttpMethod.Get, $"{_endpoint}/NotEvenAGuid");      
 
         // Act
-        var response = await _httpClient.SendAsync(request);
+        var response = await _httpClient.GetAsync($"{_endpoint}/NotEvenAGuid");
 
         // Assert
         Assert.Equal(HttpStatusCode.BadRequest, response.StatusCode);
@@ -103,19 +93,32 @@ public class AuctionsControllerTests : IClassFixture<CustomWebAppFactory>, IAsyn
     public async Task CreateAuction_WithNoAuth_ShouldReturn_Unauthorized()
     {
         // Arrange
-        var createAuctionDto = new CreateAuctionDto{ Make = "Won't", Model = "Work" };
-        var request = new HttpRequestMessage(HttpMethod.Post, _endpoint)
-        {
-            Content = HttpHelper.DtoToJsonContent(createAuctionDto)
-        }; 
+        var auction = new CreateAuctionDto { Make = "Won't Matter" };
 
         // Act
-        var response = await _httpClient.SendAsync(request);
+        var response = await _httpClient.PostAsJsonAsync(_endpoint, auction);
 
         // Assert
         Assert.Equal(HttpStatusCode.Unauthorized, response.StatusCode);
     }
 
+    [Fact]
+    public async Task CreateAuction_WithAuth_ShouldReturn_Created()
+    {
+        // Arrange
+        const string mrBean = "MrBean";
+        var auction = TestData.GetTestAuction();        
+        _httpClient.SetFakeJwtBearerToken(AuthHelper.GetBearerForUser(mrBean));
+
+        // Act
+        var response = await _httpClient.PostAsJsonAsync(_endpoint, auction);
+
+        // Assert
+        response.EnsureSuccessStatusCode();
+        Assert.Equal(HttpStatusCode.Created, response.StatusCode);
+        var returnedAuctionDto = await response.Content.ReadFromJsonAsync<AuctionDto>();
+        Assert.Equal(mrBean, returnedAuctionDto.Seller);
+    }
 
 
  
