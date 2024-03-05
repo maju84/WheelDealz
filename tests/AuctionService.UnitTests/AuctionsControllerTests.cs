@@ -14,7 +14,7 @@ using Moq;
 
 namespace AuctionService.UnitTests;
 
-public class AuctionControllerTests
+public class AuctionsControllerTests
 {
     private readonly Mock<IAuctionRepository> _mockAuctionRepo;
     private readonly Mock<IPublishEndpoint> _mockPublishEndpoint;
@@ -24,7 +24,7 @@ public class AuctionControllerTests
     private readonly IMapper _mapper;
 
 
-    public AuctionControllerTests()
+    public AuctionsControllerTests()
     {
         _mockAuctionRepo = new Mock<IAuctionRepository>();
         _mockPublishEndpoint = new Mock<IPublishEndpoint>();
