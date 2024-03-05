@@ -17,6 +17,9 @@ public class AuctionsControllerTests : IClassFixture<CustomWebAppFactory>, IAsyn
     private const string _endpoint = "api/auctions";    // todo extract out to central place
     private const string _bugattiVeyronId = "c8c3ec17-01bf-49db-82aa-1ef80b833a9f";     
 
+    private const string _mrBeanUser = "MrBean";
+    private const string _aliceUser = "alice";
+
     public AuctionsControllerTests(CustomWebAppFactory factory)
     {
         _factory = factory;
@@ -106,9 +109,8 @@ public class AuctionsControllerTests : IClassFixture<CustomWebAppFactory>, IAsyn
     public async Task CreateAuction_WithAuth_ShouldReturn_Created()
     {
         // Arrange
-        const string mrBean = "MrBean";
         var auction = TestData.GetTestAuction();        
-        _httpClient.SetFakeJwtBearerToken(AuthHelper.GetBearerForUser(mrBean));
+        _httpClient.SetFakeJwtBearerToken(AuthHelper.GetBearerForUser(_mrBeanUser));
 
         // Act
         var response = await _httpClient.PostAsJsonAsync(_endpoint, auction);
@@ -117,7 +119,50 @@ public class AuctionsControllerTests : IClassFixture<CustomWebAppFactory>, IAsyn
         response.EnsureSuccessStatusCode();
         Assert.Equal(HttpStatusCode.Created, response.StatusCode);
         var returnedAuctionDto = await response.Content.ReadFromJsonAsync<AuctionDto>();
-        Assert.Equal(mrBean, returnedAuctionDto.Seller);
+        Assert.Equal(_mrBeanUser, returnedAuctionDto.Seller);
+    }
+    
+    [Fact]
+    public async Task CreateAuction_WithInvalidCreateAuctionDto_ShouldReturn_BadRequest()
+    {
+        // Arrange
+        var auction = TestData.GetTestAuction();
+        auction.Make = null;
+        _httpClient.SetFakeJwtBearerToken(AuthHelper.GetBearerForUser(_mrBeanUser));
+
+        // Act
+        var response = await _httpClient.PostAsJsonAsync(_endpoint, auction);
+
+        // Assert
+        Assert.Equal(HttpStatusCode.BadRequest, response.StatusCode);
+    }
+
+    [Fact]
+    public async Task UpdateAuction_WithValidUpdateDtoAndUser_ShouldReturn_Ok()
+    {
+        // Arrange
+        var updateAuction = new UpdateAuctionDto { Make = "Updated" };
+        _httpClient.SetFakeJwtBearerToken(AuthHelper.GetBearerForUser(_aliceUser));
+
+        // Act
+        var response = await _httpClient.PutAsJsonAsync($"{_endpoint}/{_bugattiVeyronId}", updateAuction);
+
+        // Assert
+        Assert.Equal(HttpStatusCode.OK, response.StatusCode);
+    }
+
+    [Fact]
+    public async Task UpdateAuction_WithValidUpdateDtoAndInvalidUser_ShouldReturn_Forbidden()
+    {
+        // Arrange
+        var updateAuction = new UpdateAuctionDto { Make = "Updated" };
+        _httpClient.SetFakeJwtBearerToken(AuthHelper.GetBearerForUser(_mrBeanUser));    // *not* bob
+
+        // Act
+        var response = await _httpClient.PutAsJsonAsync($"{_endpoint}/{_bugattiVeyronId}", updateAuction);
+
+        // Assert
+        Assert.Equal(HttpStatusCode.Forbidden, response.StatusCode);
     }
 
 
