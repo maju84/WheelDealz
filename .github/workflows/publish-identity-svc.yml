@@ -3,7 +3,7 @@ name: publish-identity-svc
 on:
   workflow_dispatch:  # Allows you to run this workflow manually
   push:
-    branches:  [ "main" ]
+    branches:  [ "main" ] #  , "feature/k8s-local" ]
     paths:
       - 'src/IdentityService/**'  # only for changes on the IdentityService
 
