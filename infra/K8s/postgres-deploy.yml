@@ -1,0 +1,76 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: postgres
+spec:
+  selector:
+    matchLabels:
+      app: postgres
+  template:
+    metadata:
+      labels:
+        app: postgres
+    spec:
+      containers:
+      - name: postgres
+        image: postgres
+        env:
+        - name: POSTGRES_PASSWORD
+          value: postgrespw
+        resources:
+          limits:
+            memory: "1000Mi"
+            cpu: "1000m"
+        ports:
+        - containerPort: 5432
+        volumeMounts:
+        - mountPath: /var/data/postgres
+          name: postgres-storage  # must match the name of the volume
+      volumes:
+      - name: postgres-storage  # must match the name of the volumeMount
+        persistentVolumeClaim:
+          claimName: postgres-claim # must match the name of the PVC
+
+---
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: postgres-clusterip
+spec:
+  selector:
+    app: postgres
+  ports:
+  - port: 5432
+    targetPort: 5432
+
+---
+
+apiVersion: v1
+kind: Service
+metadata:
+  #name: postgres-loadbalancer
+  name: postgres-nodeport
+spec:
+  #type: LoadBalancer  # not natively supported in minikube
+  type: NodePort
+  selector:
+    app: postgres  # must match the label of the pod
+  ports:
+  - port: 5432
+    targetPort: 5432
+
+---
+
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: postgres-claim
+spec:
+  resources:
+    requests:
+      storage: 200Mi
+  volumeMode: Filesystem
+  accessModes:
+    - ReadWriteOnce
+
