@@ -1,0 +1,42 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: notification-svc
+spec:
+  selector:
+    matchLabels:
+      app: notification-svc
+  template:
+    metadata:
+      labels:
+        app: notification-svc
+    spec:
+      containers:
+      - name: notification-svc
+        image: maju84/notification-svc
+        imagePullPolicy: Never
+        env:
+          - name: RabbitMq__Host
+            value: rabbitmq-clusterip
+          - name: RabbitMq__Username
+            value: rabbit
+          - name: RabbitMq__Password
+            value: rabbit
+        resources:
+          limits:
+            memory: "1000Mi"
+            cpu: "1000m"
+
+---
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: notification-svc-clusterip
+spec:
+  type: ClusterIP
+  selector:
+    app: notification-svc
+  ports:
+  - port: 80
+    targetPort: 80
