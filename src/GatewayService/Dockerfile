@@ -1,17 +1,21 @@
-FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build
+# Use the SDK image for building the project - Alpine version
+FROM mcr.microsoft.com/dotnet/sdk:8.0-alpine AS build
 WORKDIR /app
 
 # Copy csproj and restore as distinct layers
-COPY src/GatewayService/GatewayService.csproj src/GatewayService/
-COPY src/Contracts/Contracts.csproj src/Contracts/
-RUN dotnet restore "src/GatewayService/GatewayService.csproj"
+COPY ["src/GatewayService/GatewayService.csproj", "GatewayService/"]
 
-# Copy everything else and build
-COPY src/ src/
-WORKDIR "/app/src/GatewayService"
-RUN dotnet publish -c Release -o /app/publish
+# Restore dependencies
+RUN dotnet restore "GatewayService/GatewayService.csproj"
 
-FROM mcr.microsoft.com/dotnet/aspnet:8.0
+
+# Copy only the relevant source code and build the project
+COPY ["src/GatewayService/", "GatewayService/"]
+WORKDIR "/app/GatewayService"
+RUN dotnet publish "GatewayService.csproj" -c Release -o /app/publish
+
+# Build the runtime image - Alpine version
+FROM mcr.microsoft.com/dotnet/aspnet:8.0-alpine AS final
 WORKDIR /app
 EXPOSE 80
 COPY --from=build /app/publish .

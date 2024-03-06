@@ -1,17 +1,22 @@
-FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build
+# Use the SDK image for building the project - Alpine version
+FROM mcr.microsoft.com/dotnet/sdk:8.0-alpine AS build
 WORKDIR /app
 
-# Copy csproj and restore as distinct layers
-COPY src/NotificationService/NotificationService.csproj src/NotificationService/
-COPY src/Contracts/Contracts.csproj src/Contracts/
-RUN dotnet restore "src/NotificationService/NotificationService.csproj"
+# Copy the necessary project files
+COPY ["src/Contracts/Contracts.csproj", "Contracts/"]
+COPY ["src/NotificationService/NotificationService.csproj", "NotificationService/"]
 
-# Copy everything else and build
-COPY src/ src/
-WORKDIR "/app/src/NotificationService"
-RUN dotnet publish -c Release -o /app/publish
+# Restore dependencies
+RUN dotnet restore "NotificationService/NotificationService.csproj"
 
-FROM mcr.microsoft.com/dotnet/aspnet:8.0
+# Copy only the relevant source code and build the project
+COPY ["src/Contracts", "Contracts/"]
+COPY ["src/NotificationService", "NotificationService/"]
+WORKDIR "/app/NotificationService"
+RUN dotnet publish NotificationService.csproj -c Release -o /app/publish
+
+# Build the runtime image - Alpine version
+FROM mcr.microsoft.com/dotnet/aspnet:8.0-alpine AS final
 WORKDIR /app
 EXPOSE 80
 COPY --from=build /app/publish .

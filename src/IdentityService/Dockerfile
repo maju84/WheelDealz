@@ -1,17 +1,20 @@
-FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build
+# Use the SDK image for building the project - Alpine version
+FROM mcr.microsoft.com/dotnet/sdk:8.0-alpine AS build
 WORKDIR /app
 
-# Copy csproj and restore as distinct layers
-COPY src/IdentityService/IdentityService.csproj src/IdentityService/
-COPY src/Contracts/Contracts.csproj src/Contracts/
-RUN dotnet restore "src/IdentityService/IdentityService.csproj"
+# Copy the necessary project files
+COPY ["src/IdentityService/IdentityService.csproj", "IdentityService/"]
 
-# Copy everything else and build
-COPY src/ src/
-WORKDIR "/app/src/IdentityService"
-RUN dotnet publish -c Release -o /app/publish
+# Restore dependencies
+RUN dotnet restore "IdentityService/IdentityService.csproj"
 
-FROM mcr.microsoft.com/dotnet/aspnet:8.0
+# Copy only the relevant source code and build the project
+COPY ["src/IdentityService", "IdentityService/"]
+WORKDIR "/app/IdentityService"
+RUN dotnet publish "IdentityService.csproj" -c Release -o /app/publish
+
+# Build the runtime image - Alpine version
+FROM mcr.microsoft.com/dotnet/aspnet:8.0-alpine AS final
 WORKDIR /app
 EXPOSE 80
 COPY --from=build /app/publish .

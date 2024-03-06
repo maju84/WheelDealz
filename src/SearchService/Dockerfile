@@ -1,17 +1,22 @@
-FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build
+# Use the SDK image for building the project - Alpine version
+FROM mcr.microsoft.com/dotnet/sdk:8.0-alpine AS build
 WORKDIR /app
 
-# Copy csproj and restore as distinct layers
-COPY src/SearchService/SearchService.csproj src/SearchService/
-COPY src/Contracts/Contracts.csproj src/Contracts/
-RUN dotnet restore "src/SearchService/SearchService.csproj"
+# Copy the necessary project files
+COPY ["src/Contracts/Contracts.csproj", "Contracts/"]
+COPY ["src/SearchService/SearchService.csproj", "SearchService/"]
 
-# Copy everything else and build
-COPY src/ src/
-WORKDIR "/app/src/SearchService"
-RUN dotnet publish -c Release -o /app/publish
+# Restore dependencies
+RUN dotnet restore "SearchService/SearchService.csproj"
 
-FROM mcr.microsoft.com/dotnet/aspnet:8.0
+# Copy only the relevant source code and build the project
+COPY ["src/Contracts", "Contracts/"]
+COPY ["src/SearchService", "SearchService/"]
+WORKDIR "/app/SearchService"
+RUN dotnet publish "SearchService.csproj" -c Release -o /app/publish
+
+# Build the runtime image - Alpine version
+FROM mcr.microsoft.com/dotnet/aspnet:8.0-alpine AS final
 WORKDIR /app
 EXPOSE 80
 COPY --from=build /app/publish .
