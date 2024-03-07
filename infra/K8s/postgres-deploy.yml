@@ -17,10 +17,6 @@ spec:
         env:
         - name: POSTGRES_PASSWORD
           value: postgrespw
-        resources:
-          limits:
-            memory: "1000Mi"
-            cpu: "1000m"
         ports:
         - containerPort: 5432
         volumeMounts:
@@ -49,13 +45,11 @@ spec:
 apiVersion: v1
 kind: Service
 metadata:
-  #name: postgres-loadbalancer
-  name: postgres-nodeport
+  name: postgres-lb
 spec:
-  #type: LoadBalancer  # not natively supported in minikube
-  type: NodePort
+  type: LoadBalancer
   selector:
-    app: postgres  # must match the label of the pod
+    app: postgres
   ports:
   - port: 5432
     targetPort: 5432
@@ -69,7 +63,7 @@ metadata:
 spec:
   resources:
     requests:
-      storage: 200Mi
+      storage: 500Mi
   volumeMode: Filesystem
   accessModes:
     - ReadWriteOnce

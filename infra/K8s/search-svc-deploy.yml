@@ -24,13 +24,7 @@ spec:
             value: rabbit
           - name: ConnectionStrings__MongoDbConnection
             value: mongodb://root:mongopw@mongodb-clusterip
-          - name: AuctionServiceUrl
-            value: http://auction-svc-clusterip
-        resources:
-          limits:
-            memory: "1000Mi"
-            cpu: "1000m"
-
+            
 ---
 
 apiVersion: v1

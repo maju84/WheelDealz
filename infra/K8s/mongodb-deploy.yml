@@ -19,10 +19,6 @@ spec:
             value: root
           - name: MONGO_INITDB_ROOT_PASSWORD
             value: mongopw
-        resources:
-          limits:
-            memory: "1000Mi"
-            cpu: "1000m"
         ports:
         - containerPort: 27017
         volumeMounts: 
@@ -50,9 +46,9 @@ spec:
 apiVersion: v1
 kind: Service
 metadata:
-  name: mongodb-nodeport
+  name: mongodb-lb
 spec:
-  type: NodePort
+  type: LoadBalancer
   selector:
     app: mongodb
   ports:

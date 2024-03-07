@@ -19,10 +19,6 @@ spec:
             value: rabbit
           - name: RABBITMQ_DEFAULT_PASS
             value: rabbit
-        resources:
-          limits:
-            memory: "1000Mi"
-            cpu: "1000m"
         ports:
         - containerPort: 15672
           name: rbmq-mgmt-port  # rabbitmq management port
@@ -55,10 +51,9 @@ spec:
 apiVersion: v1
 kind: Service
 metadata:
-  name: rabbitmq-nodeport
+  name: rabbitmq-lb
 spec:
-  #type: LoadBalancer # not natively supported in minikube
-  type: NodePort  
+  type: LoadBalancer
   selector:
     app: rabbitmq
   ports:

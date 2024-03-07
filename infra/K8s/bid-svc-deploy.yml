@@ -26,12 +26,8 @@ spec:
             value: mongodb://root:mongopw@mongodb-clusterip
           - name: IdentityServiceUrl
             value: https://identity.more-than.tech
-          - name: GrpcAuction
+          - name: GrpcAuctionServiceUrl
             value: http://auction-svc-clusterip:7777
-        resources:
-          limits:
-            memory: "1000Mi"
-            cpu: "1000m"
 
 ---
 

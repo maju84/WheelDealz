@@ -34,10 +34,6 @@ spec:
             value: Http1
           - name: Kestrel__Endpoints__WebApi__Url
             value: http://+:80
-        resources:
-          limits:
-            memory: "1000Mi"
-            cpu: "1000m"
 
 ---
 
