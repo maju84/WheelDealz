@@ -1,4 +1,4 @@
-using Duende.IdentityServer;
+using Duende.IdentityServer.Services;
 using IdentityService.Data;
 using IdentityService.Models;
 using IdentityService.Services;
@@ -71,6 +71,17 @@ internal static class HostingExtensions
 
         app.UseStaticFiles();
         app.UseRouting();
+
+        if (app.Environment.IsProduction()){
+            app.Use(async (context, next) =>
+            {
+                var serverUrls = context.RequestServices.GetRequiredService<IServerUrls>();
+                serverUrls.Origin = serverUrls.Origin = "https://identity.more-than.tech";
+                await next();
+            });
+        }
+
+
         app.UseIdentityServer();
         app.UseAuthorization();
         
