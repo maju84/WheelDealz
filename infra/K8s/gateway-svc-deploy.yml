@@ -18,6 +18,8 @@ spec:
         env:
           - name: ClientApp
             value: https://app.wheeldealz.tech
+          - name: IdentityServiceUrl
+            value: https://identity.more-than.tech
 
 ---
 
