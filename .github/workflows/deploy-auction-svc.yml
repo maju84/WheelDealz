@@ -1,4 +1,4 @@
-name: publish-auction-svc
+name: deploy-auction-svc
 
 on:
   workflow_dispatch:  # allows to run this workflow manually
@@ -9,7 +9,9 @@ on:
 
 env:
   REGISTRY_IMAGE_NAME: auction-svc
+  DEPLOYMENT_NAME: auction-svc
   DOCKERFILE_PATH: ./src/AuctionService/Dockerfile
+  
 
 jobs:
   build:
@@ -30,5 +32,24 @@ jobs:
         file: ${{ env.DOCKERFILE_PATH }}
         push: true
         tags: ${{ secrets.DOCKERHUB_USERNAME }}/${{ env.REGISTRY_IMAGE_NAME }}:latest
+
+# Assuming the image was updated if the previous step succeeded
+# todo: add a check for the image tag, intent: avoid unnecessary re-deployments
+# todo: split into publish to docker registry and deploy to k8s
+# todo: error handling
+
+    - name: Install doctl
+      if: success() # only run if the previous step succeeded
+      uses: digitalocean/action-doctl@v2
+      with:
+        token: ${{ secrets.DIGITALOCEAN_ACCESS_TOKEN }}
+
+    - name: Save DigitalOcean kubeconfig
+      if: success()
+      run: doctl kubernetes cluster kubeconfig save wheeldealz
+
+    - name: Restart Deployment
+      if: success()
+      run: kubectl rollout restart deployment ${{ env.DEPLOYMENT_NAME }}
 
       
