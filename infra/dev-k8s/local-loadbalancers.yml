@@ -1,0 +1,51 @@
+# LoadBalancer Services are expensive on cloud providers.
+# Therefore, we use these only for local development.
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: postgres-lb
+spec:
+  type: LoadBalancer
+  selector:
+    app: postgres
+  ports:
+  - port: 5432
+    targetPort: 5432
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: mongodb-lb
+spec:
+  type: LoadBalancer
+  selector:
+    app: mongodb
+  ports:
+  - port: 27017
+    targetPort: 27017
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: rabbitmq-lb
+spec:
+  type: LoadBalancer
+  selector:
+    app: rabbitmq
+  ports:
+  - port: 15672         # rabbitmq management port
+    targetPort: 15672
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: wheeldealz-fe-lb
+spec:
+  type: LoadBalancer
+  selector:
+    app: wheeldealz-fe
+  ports:
+  - port: 3000
+    targetPort: 3000
+---

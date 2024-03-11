@@ -43,18 +43,3 @@ spec:
   ports:
   - port: 3000
     targetPort: 3000
-
----
-
-apiVersion: v1
-kind: Service
-metadata:
-  name: wheeldealz-fe-lb
-spec:
-  type: LoadBalancer
-  selector:
-    app: wheeldealz-fe
-  ports:
-  - port: 3000
-    targetPort: 3000
-
