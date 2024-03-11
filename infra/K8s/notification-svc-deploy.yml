@@ -14,7 +14,7 @@ spec:
       containers:
       - name: notification-svc
         image: maju84/notification-svc
-        imagePullPolicy: Never
+        imagePullPolicy: Always
         env:
           - name: RabbitMq__Host
             value: rabbitmq-clusterip

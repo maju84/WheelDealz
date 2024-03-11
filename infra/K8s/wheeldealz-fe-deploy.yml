@@ -14,7 +14,7 @@ spec:
       containers:
       - name: wheeldealz-fe
         image: maju84/wheeldealz-fe
-        imagePullPolicy: Never
+        imagePullPolicy: Always
         env:
           - name: NEXTAUTH_SECRET
             valueFrom:

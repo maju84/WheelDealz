@@ -14,7 +14,7 @@ spec:
       containers:
       - name: auction-svc
         image: maju84/auction-svc
-        imagePullPolicy: Never    # never from remote, always from local (node!)
+        imagePullPolicy: Always
         env:
           - name: RabbitMq__Host
             value: rabbitmq-clusterip
