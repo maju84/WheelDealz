@@ -19,11 +19,21 @@ spec:
           - name: RabbitMq__Host
             value: rabbitmq-clusterip
           - name: RabbitMq__Username
-            value: rabbit
+            valueFrom:
+              secretKeyRef:
+                name: search-svc-secret
+                key: rabbitUser
           - name: RabbitMq__Password
-            value: rabbit
+            valueFrom:
+              secretKeyRef:
+                name: search-svc-secret
+                key: rabbitPassword
           - name: ConnectionStrings__MongoDbConnection
-            value: mongodb://root:mongopw@mongodb-clusterip
+            valueFrom:
+              secretKeyRef:
+                name: search-svc-secret
+                key: connString
+
             
 ---
 

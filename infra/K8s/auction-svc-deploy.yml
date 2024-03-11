@@ -23,7 +23,10 @@ spec:
           - name: RabbitMq__Password
             value: rabbit
           - name: ConnectionStrings__DefaultConnection
-            value: Server=postgres-clusterip:5432;User Id=postgres;Password=postgrespw;Database=auctiondb
+            valueFrom:
+              secretKeyRef:
+                name: auction-svc-secret
+                key: connString
           - name: IdentityServiceUrl
             value: https://identity.more-than.tech
           - name: Kestrel__Endpoints__Grpc__Protocols
