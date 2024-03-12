@@ -21,8 +21,13 @@ spec:
               secretKeyRef:
                 name: wheeldealz-fe-secret
                 key: authSecret
+          - name: IDENTITY_SERVER_CLIENT_SECRET
+            valueFrom:
+              secretKeyRef:
+                name: wheeldealz-fe-secret
+                key: clientSecret
           - name: NEXTAUTH_URL
-            value: https://app.wheeldealz.tech
+            value: https://app.wheeldealz.online
           - name: API_URL
             value: http://gateway-svc-clusterip/
           - name: IDENTITY_SERVER_URL

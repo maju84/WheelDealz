@@ -19,25 +19,26 @@ public static class Config
         };
 
     public static IEnumerable<Client> Clients(IConfiguration config) =>
-        new Client[]
-        {
-            // a client config for development purposes only!
-            new Client
-            {
-                ClientId = "postman",
-                ClientName = "Postman",
-                AllowedScopes = { "openid", "profile", "auction-app" },
+        [
+            // deactivated to deploy to prod
+            // todo proper way to enable postman client for dev
+            
+            // // a client config for development purposes only!
+            // new Client
+            // {
+            //     ClientId = "postman",
+            //     ClientName = "Postman",
+            //     AllowedScopes = { "openid", "profile", "auction-app" },
 
-                // postman won't be redirected to any url but for the sake of the example we will use the postman callback url
-                RedirectUris = { "https://www.getpostman.com/oauth2/callback" },    
-                ClientSecrets = new [] {new Secret("NotSoSecret".Sha256())},
-                AllowedGrantTypes = {GrantType.ResourceOwnerPassword},
-            },
-            new Client
-            {
+            //     // postman won't be redirected to any url but for the sake of the example we will use the postman callback url
+            //     RedirectUris = { "https://www.getpostman.com/oauth2/callback" },    
+            //     ClientSecrets = new [] {new Secret("NotSoSecret".Sha256())},    // todo mention in README
+            //     AllowedGrantTypes = {GrantType.ResourceOwnerPassword},
+            // },
+            new() {
                 ClientId = "next-app",
                 ClientName = "NextApp",
-                ClientSecrets = new [] {new Secret("secret".Sha256())},                              
+                ClientSecrets = [new Secret(config["ClientSecret"].Sha256())],                              
                 AllowedGrantTypes = GrantTypes.CodeAndClientCredentials,
                 RequirePkce = false,
                 RedirectUris = { config["ClientApp"] + "/api/auth/callback/id-server" },   
@@ -52,5 +53,5 @@ public static class Config
                 AlwaysIncludeUserClaimsInIdToken = true,
             }
 
-        };
+        ];
 }
