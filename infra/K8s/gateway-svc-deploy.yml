@@ -17,7 +17,7 @@ spec:
         imagePullPolicy: Always
         env:
           - name: ClientApp
-            value: https://app.wheeldealz.tech
+            value: https://app.wheeldealz.online
           - name: IdentityServiceUrl
             value: https://identity.more-than.tech
 
