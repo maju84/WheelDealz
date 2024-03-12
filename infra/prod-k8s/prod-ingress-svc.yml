@@ -7,8 +7,15 @@ metadata:
   name: ingress-svc
   labels:
     name: ingress-svc
+  annotations:
+    cert-manager.io/cluster-issuer: "letsencrypt-staging"
 spec:
   ingressClassName: nginx
+  tls:
+  - hosts:
+    - app.wheeldealz.online
+    - api.wheeldealz.online
+    secretName: wheeldealz-tls
   rules:
   - host: app.wheeldealz.online
     http:
