@@ -10,6 +10,8 @@ namespace IdentityService;
 
 internal static class HostingExtensions
 {
+
+    const string ProdIssuerUri = "https://identity.more-than.tech";
     public static WebApplication ConfigureServices(this WebApplicationBuilder builder)
     {
         builder.Services.AddRazorPages();
@@ -38,7 +40,7 @@ internal static class HostingExtensions
 
                 if (builder.Environment.IsProduction())
                 {
-                    options.IssuerUri = "https://identity.more-than.tech";
+                    options.IssuerUri = ProdIssuerUri;
                 }
 
 
@@ -81,7 +83,7 @@ internal static class HostingExtensions
             app.Use(async (context, next) =>
             {
                 var serverUrls = context.RequestServices.GetRequiredService<IServerUrls>();
-                serverUrls.Origin = serverUrls.Origin = "https://identity.more-than.tech";
+                serverUrls.Origin = serverUrls.Origin = ProdIssuerUri;
                 await next();
             });
         }
