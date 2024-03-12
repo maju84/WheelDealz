@@ -3,7 +3,7 @@ name: deploy-gateway-svc
 on:
   workflow_dispatch:  # allows to run this workflow manually
   push:
-    branches:  [ "main", "feature/k8s-do" ]
+    branches:  [ "main" ]
     paths:
       - 'src/GatewayService/**'
 
@@ -28,7 +28,7 @@ jobs:
     - name: Build and push the Docker image
       uses: docker/build-push-action@v4
       with:
-        context: .
+        context: "{{defaultContext}}"
         file: ${{ env.DOCKERFILE_PATH }}
         push: true
         tags: ${{ secrets.DOCKERHUB_USERNAME }}/${{ env.REGISTRY_IMAGE_NAME }}:latest

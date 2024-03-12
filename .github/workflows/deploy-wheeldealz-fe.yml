@@ -3,7 +3,7 @@ name: deploy-wheeldealz-fe
 on:
   workflow_dispatch:  # allows to run this workflow manually
   push:
-    branches:  [ "main", "feature/k8s-do" ]
+    branches:  [ "main" ]
     paths:
       - 'frontend/wheeldealz-fe/**'
 
