@@ -36,6 +36,11 @@ internal static class HostingExtensions
                     options.IssuerUri = "identity-svc";
                 }
 
+                if (builder.Environment.IsProduction())
+                {
+                    options.IssuerUri = "https://identity.more-than.tech";
+                }
+
 
                 // see https://docs.duendesoftware.com/identityserver/v6/fundamentals/resources/
                 // options.EmitStaticAudienceClaim = true; // todo - for now we are not using this
