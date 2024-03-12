@@ -1,0 +1,32 @@
+# This Ingress config routes traffic to frontend and API services:
+# - app.wheeldealz.online -> wheeldealz-fe-clusterip:3000 (Frontend)
+# - api.wheeldealz.online -> gateway-svc-clusterip:80 (API Gateway)
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: ingress-svc
+  labels:
+    name: ingress-svc
+spec:
+  ingressClassName: nginx
+  rules:
+  - host: app.wheeldealz.online
+    http:
+      paths:
+      - pathType: Prefix
+        path: "/"
+        backend:
+          service:
+            name: wheeldealz-fe-clusterip
+            port: 
+              number: 3000
+  - host: api.wheeldealz.online
+    http:
+      paths:
+      - pathType: Prefix
+        path: "/"
+        backend:
+          service:
+            name: gateway-svc-clusterip
+            port: 
+              number: 80
