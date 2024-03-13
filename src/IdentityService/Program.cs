@@ -1,4 +1,6 @@
 ﻿using IdentityService;
+using IdentityService.Data;
+using Microsoft.EntityFrameworkCore;
 using Serilog;
 
 Log.Logger = new LoggerConfiguration()
@@ -20,11 +22,19 @@ try
         .ConfigureServices()
         .ConfigurePipeline();
 
-    // this seeding is only for the template to bootstrap the DB and users.
-    // in production you will likely want a different approach.
-    Log.Information("Seeding database...");
-    SeedData.EnsureSeedData(app);
-    Log.Information("Done seeding database. Exiting.");
+    // Extracted migration logic, directly creating a scope and accessing ApplicationDbContext
+    using (var scope = app.Services.CreateScope())
+    {
+        var context = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
+        context.Database.Migrate(); // todo not ideal for production
+    }
+
+    
+    if (builder.Environment.IsDevelopment())
+    {
+        // Seed data in development environment only
+        SeedData.EnsureSeedData(app);
+    }
 
     app.Run();
 }
