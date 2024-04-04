@@ -120,4 +120,10 @@ In my experience, they tend to stay and even propagate.
 - SQL-Server instead of Postgres
 - deploy on local / K8s cluster and expose via public dns/url
 
+# Questions to be addressed or answered in this readme
+- config: there is a an .env.local, several appsettings.*.json, env-variables in docker-compose and k8s manifests...
+    how do these play together
+- whats needed in /etc/hosts and why
+
+
 
